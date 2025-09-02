@@ -1,0 +1,31 @@
+.form label{
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    color: #7a7979;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    padding: 0 5px;
+    pointer-events: none;
+    z-index: 1;
+      transform: translateY(-50%);
+      font-weight: bold;
+}
+.form input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+}
+.form input:focus {
+    border-color: #646cff;
+    outline: none;
+}
+.form input:focus + label,
+.form input:not(:placeholder-shown) + label {
+    width: fit-content;
+    top: 0px;
+    left: 15px;
+    background-color: #353535;
+    color: white;
+      
+}

@@ -1,0 +1,98 @@
+/* Ensure react-slick arrows are visible and above other elements */
+.slick-arrow,
+.slick-next,
+.slick-prev {
+  z-index: 50 !important;
+  display: flex !important;
+  opacity: 1 !important;
+}
+
+.slick-arrow.slick-hidden {
+  display: none !important;
+}
+.categories {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 2rem 0;
+}
+.category {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  width: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.category:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.13);
+}
+.category img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+.category h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.slick-next {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: auto;
+  height: auto;
+}
+.slick-next::before,
+.slick-prev::before {
+  font-size: 30px;
+  color: #c7c2c2 !important;
+  width: 100px !important;
+  height: 100px !important;
+    display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slick-prev{
+   position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 100px;
+  height: 100px;
+  left: 10px;
+  overflow: hidden;
+}
+.slick-dots{
+  bottom: 10px;
+  text-align: center;
+}
+.slick-dots li{
+  display: inline-block;
+  margin: 0 5px;
+}
+.slick-dots button{
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #e9e9e9;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+.slick-dots .slick-active button{
+  background: #807e7e;
+}
