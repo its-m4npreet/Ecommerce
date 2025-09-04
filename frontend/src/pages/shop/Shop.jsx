@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Categories } from "../../utils/categories";
 import { GetProducts } from "../../utils/getProduct";
-import "../../components/shop.css"
+// import "../../components/shop.css"
 
 export const Shop = () => {
      const [selectedCategory, setSelectedCategory] = useState("All");

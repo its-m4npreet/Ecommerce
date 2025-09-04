@@ -23,19 +23,13 @@ function App() {
             errorElement: <ErrorSection />, 
             children: [
                 {
-                    path: '/home',
+                    path: '/' ,
                     element: <Home />, 
-                    loader: getProducts,
-                    errorElement: <ErrorSection />, 
-                },
-                {
-                    path: '/shop',
-                    element: <Shop />, 
                     errorElement: <ErrorSection />, 
                     loader: getProducts
                 },
                 {
-                    path: '/shop/:productId',
+                    path: '/product/:productId',
                     element: <Product />, 
                     errorElement: <ErrorSection />, 
                     loader: productsDetails,

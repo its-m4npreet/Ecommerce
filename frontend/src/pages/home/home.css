@@ -18,7 +18,8 @@
   margin: 2rem 0;
 }
 .category {
-  background: #fff;
+  /* background:#23232a; */
+  background:#2e2e30;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
   padding: 1.5rem 1rem;
@@ -30,6 +31,9 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  color: white;
+  border: #23232a;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.12));
 }
 .category:hover {
   transform: translateY(-5px) scale(1.03);
@@ -44,7 +48,7 @@
 .category h3 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #333;
+  color: white;
   margin: 0;
 }
 

@@ -4,7 +4,7 @@ const { userModel } = require("../models/user.model");
 
 const userRoute=express.Router();
 
-userRoute.post("/", async (req, res) => {
+userRoute.post("/user/register", async (req, res) => {
   try {
     console.log(req.body);
     const newUser = new userModel(req.body);

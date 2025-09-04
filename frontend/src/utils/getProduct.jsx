@@ -24,9 +24,9 @@ export const GetProducts = ({ selectedCategory = "All" }) => {
         <div className="max-w-7xl mx-auto px-4 py-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 {filteredProducts && filteredProducts.length > 0 ? filteredProducts.map(product => (
-                    <div className="bg-[#2e2e30] rounded-xl shadow-lg overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300 min-h-[441.5px]" key={product.id}>
+                    <div className="bg-[#2e2e30] rounded-xl shadow-lg overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300 min-h-[441.5px] drop-shadow-2xl" key={product.id}>
                         <div className="aspect-w-1 aspect-h-1 bg-gray-100 flex items-center justify-center">
-                            <NavLink to={`/shop/${product.id}`} className="block w-full h-full">
+                            <NavLink to={`/product/${product.id}`} className="block w-full h-full">
                                 <img src={product.images} alt={product.title} className="object-cover w-full h-[337.5px]" />
                             </NavLink>
                         </div>

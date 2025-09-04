@@ -10,7 +10,7 @@ export const Navbar = () => {
     const[isLoggedIn ,setIsLoggedIn]=useState(true)
     
     return (
-        <nav className="border-b border-black flex h-16 w-full justify-evenly items-center shadow-lg  gap-5 bg-[#18181b]">
+        <nav className="border-b border-[#23232a] flex h-16 w-full justify-evenly items-center shadow-lg  gap-5 bg-[#18181b]">
             <Logo />
             <Search />
           {
@@ -23,14 +23,11 @@ export const Navbar = () => {
 
 const NavLinks =()=>{
 return <div className="links flex gap-3">
-                    <NavLink to="/home" className="flex items-center gap-2 px-4 py-2 rounded font-medium text-white hover:text-cyan-400 transition-colors duration-200">
+                    <NavLink to="/" className="flex items-center gap-2 px-4 py-2 rounded font-medium text-white hover:text-cyan-400 transition-colors duration-200">
                         <FaHome />
                         Home
                     </NavLink>
-                    <NavLink to="/shop" className="flex items-center gap-2 px-4 py-2 rounded font-medium text-white hover:text-cyan-400 transition-colors duration-200">
-                        <GiShoppingBag />
-                        Shop
-                    </NavLink>
+                    
                     <NavLink to="/about" className="flex items-center gap-2 px-4 py-2 rounded font-medium text-white hover:text-cyan-400 transition-colors duration-200">
                         <FaCircleInfo />
                         About

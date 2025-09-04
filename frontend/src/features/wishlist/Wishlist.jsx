@@ -24,7 +24,7 @@ const wishlist = [
 ];
 
 const Wishlist = () => (
-	<div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black py-10 px-4 flex flex-col items-center">
+	<div className="min-h-screen bg-[#242424] py-10 px-4 flex flex-col items-center">
 		<h1 className="text-4xl font-extrabold text-gray-200 mb-8 flex items-center gap-2">
 			<FaRegHeart className="text-gray-400" /> Wishlist
 		</h1>

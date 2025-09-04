@@ -38,7 +38,7 @@ function BannerCarousel({ imagePosition = 'top' }) {
           <img
             src={slide.img}
             alt={slide.alt}
-            className="w-full h-64 object-cover rounded-xl shadow-lg"
+            className="w-full h-64 object-cover rounded-xl shadow-lg drop-shadow-2xl opacity-[80%]"
             style={{ objectPosition: imagePosition }}
           />
           </div>

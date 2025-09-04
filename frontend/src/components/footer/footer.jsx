@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import './footer.css';
 export const Footer = () => {
 return (
-    <footer className="bg-[#18181b] text-gray-200 pt-12 pb-6 border-t border-gray-800">
+    <footer className="bg-[#18181b] text-gray-200 pt-12 pb-6 border-t border-[#23232a]">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-10">
             {/* Branding & App Download */}
             <div className="md:col-span-2 flex flex-col gap-4">
@@ -51,7 +51,7 @@ return (
                 <form className="flex flex-col gap-2 mb-3" onSubmit={e => e.preventDefault()}>
                     <label htmlFor="newsletter" className="sr-only">Email address</label>
                     <input id="newsletter" type="email" placeholder="Your email address" className="px-3 py-2 rounded bg-gray-800 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                    <button type="submit" className=" border-2 border-blue-600 text-white rounded px-3 py-2 font-semibold transition">Subscribe</button>
+                    <button type="submit" className=" border-2 text-white rounded px-3 py-2 font-semibold transition hover:border-[#23232a]" style={{ BorderColor: '#23232a' }}>Subscribe</button>
                 </form>
                 <div className="flex space-x-4 mb-3">
                     <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-blue-500 transition-colors text-xl">
@@ -71,7 +71,7 @@ return (
                 </div>
             </div>
         </div>
-        <div className="border-t border-gray-700 mt-10 pt-4 text-center text-gray-400 text-xs md:text-sm">
+        <div className="border-t border-[#23232a] mt-10 pt-4 text-center text-gray-400 text-xs md:text-sm">
             © {new Date().getFullYear()} E-Shop. All rights reserved.
         </div>
     </footer>

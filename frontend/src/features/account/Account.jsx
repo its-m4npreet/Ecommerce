@@ -20,7 +20,7 @@ export const Account = () => {
 		<div className=" bg-[#18181b] flex flex-col items-center py-10 px-4">
 			<div className="w-full max-w-6xl flex flex-col md:flex-row gap-8">
 				{/* Sidebar */}
-				<div className="bg-[#18181b]  border-gray-700 rounded-2xl p-8 flex flex-col items-center min-w-[300px] max-w-xs shadow-lg">
+				<div className="bg-[#18181b]  border-gray-700 rounded-2xl p-8 flex flex-col items-center min-w-[300px] max-w-xs">
 					<div className="mb-4">
 						<img src={user.avatar} alt="avatar" className="w-28 h-28 rounded-full object-cover border-1 border-blue-400" />
 					</div>
@@ -33,6 +33,7 @@ export const Account = () => {
 						<span onClick={() => setActiveSection('gifts')} className={`text-left text-white font-semibold text-[20px] hover:text-blue-400 transition cursor-pointer ${activeSection === 'gifts' ? 'text-blue-400 underline' : ''}`}>gift cards</span>
 					</nav>
 				</div>
+				<div className="line w-0.5 h-105 bg-white"></div>
 				{/* Main Content */}
 				<div className="flex-1 flex flex-col gap-8">
 					{activeSection === 'personal' && <PersonalInfo />}
