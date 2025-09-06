@@ -14,6 +14,8 @@ import Trolley from './features/trolley/Trolley';
 import { productsDetails } from './api/productsDetails';
 import Help from './pages/help/Help';
 import AddressForm from './forms/AddressForm';
+import Login from './pages/auth/login/login';
+import Register from './pages/auth/register/register';
 
 
 function App() {
@@ -65,6 +67,15 @@ function App() {
                     element: <AddressForm />,
                     errorElement: <ErrorSection />, 
                 
+                },{
+                    path: '/auth/login',
+                    element: <Login />,
+                    errorElement: <ErrorSection />,
+                },
+                {
+                    path: '/auth/register',
+                    element: <Register />,
+                    errorElement: <ErrorSection />,
                 }
             ],
         },

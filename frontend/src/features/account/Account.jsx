@@ -54,7 +54,7 @@ const PersonalInfo = () => {
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 				{/* Name */}
 				<div className="relative min-h-[130px] bg-[#232326] rounded-xl p-6 flex flex-col gap-2 shadow border border-gray-700">
-					<div className="absolute top-2 right-2  text-white rounded-full p-2 transition" title="Edit">
+					<div className="absolute top-2 right-2  text-white rounded-full p-2 transition hover:border border-gray-600 hover:cursor-pointer" title="Edit">
 						<MdEdit />
 					</div>
 					<div className="flex items-center gap-2 text-gray-400 text-sm mb-1"><FaUser />Personal info</div>
@@ -62,7 +62,7 @@ const PersonalInfo = () => {
 				</div>
 				{/* Address */}
 				<div className="relative min-h-[130px] bg-[#232326] rounded-xl p-6 flex flex-col gap-2 shadow border border-gray-700">
-					<div className="absolute top-2 right-2 text-white rounded-full p-2  transition" title="Edit">
+					<div className="absolute top-2 right-2 text-white rounded-full p-2  transition hover:border border-gray-600  hover:cursor-pointer" title="Edit">
 						<MdEdit />
 					</div>
 					<div className="flex items-center gap-2 text-gray-400 text-sm mb-1"><FaMapMarkerAlt /> Address</div>
@@ -70,7 +70,7 @@ const PersonalInfo = () => {
 				</div>
 				{/* Email */}
 				<div className="relative min-h-[130px] bg-[#232326] rounded-xl p-6 flex flex-col gap-2 shadow border border-gray-700">
-					<div className="absolute top-2 right-2 text-white rounded-full p-2  transition" title="Edit">
+					<div className="absolute top-2 right-2 text-white rounded-full p-2  transition hover:border border-gray-600  hover:cursor-pointer" title="Edit">
 						<MdEdit />
 					</div>
 					<div className="flex items-center gap-2 text-gray-400 text-sm mb-1"><MdOutlinePassword />Password</div>
@@ -78,7 +78,7 @@ const PersonalInfo = () => {
 				</div>
 				{/* DOB */}
 				<div className="relative min-h-[130px] bg-[#232326] rounded-xl p-6 flex flex-col gap-2 shadow border border-gray-700">
-					<div className="absolute top-2 right-2  text-white rounded-full p-2 shadow transition" title="Edit">
+					<div className="absolute top-2 right-2  text-white rounded-full p-2 shadow transition hover:border border-gray-600  hover:cursor-pointer" title="Edit">
 						<MdEdit />
 					</div>
 					<div className="flex items-center gap-2 text-gray-400 text-sm mb-1"><MdManageAccounts />Manage Account</div>
@@ -97,7 +97,7 @@ const PaymentMethods = ()=>{
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 				{/* Payment Method 1 */}
 				<div className="relative min-h-[130px] bg-[#232326] rounded-xl p-6 flex flex-col gap-2 shadow border border-gray-700">
-					<div className="absolute top-2 right-2  text-white rounded-full p-2 shadow transition" title="Edit">
+					<div className="absolute top-2 right-2  text-white rounded-full p-2 shadow transition hover:border border-gray-600  hover:cursor-pointer" title="Edit">
 						<MdEdit />
 					</div>
 					<div className="flex items-center gap-2 text-gray-400 text-sm mb-1"><FaCreditCard /> Credit Card</div>
@@ -105,7 +105,7 @@ const PaymentMethods = ()=>{
 				</div>
 				{/* Payment Method 2 */}
 				<div className="relative min-h-[130px] bg-[#232326] rounded-xl p-6 flex flex-col gap-2 shadow border border-gray-700">
-					<div className="absolute top-2 right-2  text-white rounded-full p-2 shadow transition" title="Edit">
+					<div className="absolute top-2 right-2  text-white rounded-full p-2 shadow transition hover:border border-gray-600  hover:cursor-pointer" title="Edit">
 						<MdEdit />
 					</div>
 					<div className="flex items-center gap-2 text-gray-400 text-sm mb-1"><FaPaypal /> UPI</div>

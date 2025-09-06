@@ -35,7 +35,7 @@ const Trolley = () => {
   if(activePage === 'payment') step = 2;
 
   return (
-    <div className=" bg-[#232323] flex flex-col items-center py-10 px-2">
+    <div className=" bg-[#18181b] flex flex-col items-center py-10 px-2">
       <div className="status flex items-center gap-2 text-sm mb-6">
         <span className={` ${step === 0 ? "font-semibold text-gray-200" : "text-gray-400"}`}>TROLLEY</span>
         <span className="text-gray-500 select-none">-------------------</span>
@@ -60,7 +60,7 @@ const TrolleyPage = ({ goToAddress }) => {
   const platformFee = 10;
   const totalAmount = 550;
   return (
-    <div className="flex flex-col md:flex-row gap-6 w-full max-w-5xl">
+    <div className="flex flex-col md:flex-row gap-6 w-full max-w-5xl ">
       {/* Left: Address and Items */}
       <div className=" p-6 flex-1 w-[500px]">
         {/* Address */}
@@ -71,7 +71,7 @@ const TrolleyPage = ({ goToAddress }) => {
             </div>
             <div className="text-gray-400 text-xs">{`NEW DELHI`}</div>
           </div>
-          <button className="border border-green-600 bg-green-900 text-green-200 px-4 py-1 rounded">
+          <button className=" px-4 py-1 rounded" style={{background :"none",border:"1px solid gray", cursor:"pointer"}} onClick={goToAddress}>
             change
           </button>
         </div>
@@ -89,7 +89,7 @@ const TrolleyPage = ({ goToAddress }) => {
           {trolley.map((item) => (
             <div
               key={item.id}
-              className="relative flex bg-[#353535] rounded-lg p-4 mb-4 items-center"
+              className="relative flex bg-[#23232a] rounded-lg p-4 mb-4 items-center border border-gray-700"
             >
               {/* Product Image */}
               <div className="w-20 h-20 bg-gray-700 rounded mr-4 flex items-center justify-center overflow-hidden">
@@ -146,7 +146,7 @@ const TrolleyPage = ({ goToAddress }) => {
       </div>
       {/* Right: Discount, Donation, Price Summary */}
       <div  >
-       <div className="sticky top-4 bg-[#2d2d2d] rounded-xl py-6 px-4 w-full max-w-xs shadow-lg flex flex-col gap-4">
+       <div className="sticky top-4 bg-[#23232a] rounded-xl py-6 px-4 w-full max-w-xs shadow-lg flex flex-col gap-4">
          {/* Discount */}
         <div>
           <div className="text-gray-200 font-semibold mb-2">
@@ -177,13 +177,13 @@ const TrolleyPage = ({ goToAddress }) => {
             />
             <span>DONATE AND MAKE A DIFFERENCE</span>
           </label>
-          <div className="flex gap-2 mb-1">
-            {[10, 10, 10, 10].map((amt, i) => (
+          <div className="flex gap-1 mb-1">
+            {[10, 50, 100, 500].map((amt, i) => (
               <button
                 key={i}
                 className="bg-[#232323] border border-gray-600 text-gray-200 rounded px-2 py-1 text-xs"
               >
-                {amt}
+                &#8377;{amt}
               </button>
             ))}
           </div>
@@ -247,13 +247,13 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] w-full">
-      <div className="bg-[#242424] rounded-lg shadow-lg w-full max-w-xl p-6 relative mt-8">
+      <div className="bg-[#23232a] rounded-lg shadow-lg w-full max-w-xl p-6 relative mt-8">
         <div className="flex justify-between items-center mb-4">
           <div className="text-lg font-semibold ">Select Delivery Address</div>
         </div>
         <div className="text-xs text-gray-500 font-semibold mb-2">DEFAULT ADDRESS</div>
         {/* Address Card */}
-        <div className="border rounded-lg p-4 flex flex-col gap-2 bg-[#353535] relative mb-2">
+        <div className="border rounded-lg p-4 flex flex-col gap-2 bg-[transparent] relative mb-2">
           <div className="flex items-center gap-2">
             <input type="radio" checked readOnly style={{ accentColor: 'green', width: '1rem', height: '1rem' }} />
             <span className="font-semibold ">{address.name}</span>
@@ -266,7 +266,7 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
             Mobile: <span className="font-semibold">{address.mobile}</span>
           </div>
           <div className="flex gap-2 mt-2">
-            <button className="border border-gray-300 text-gray-700 px-4 py-1 rounded hover:bg-gray-100 transition" onClick={() => { setShowForm(true); setForm(address); }}>EDIT</button>
+            <button className="border border-gray-300  px-4 py-1 rounded hover:bg-gray-100 transition" onClick={() => { setShowForm(true); setForm(address); }}>EDIT</button>
           </div>
         </div>
         {/* Address Form */}
@@ -282,8 +282,8 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
           + Add New Address
         </div>
         <div className="flex justify-between gap-2">
-          <button className="bg-gray-600 text-white px-6 py-2 rounded font-semibold transition" onClick={goToTrolley}>Back</button>
-          <button className="bg-pink-500 text-white px-6 py-2 rounded font-semibold transition" onClick={goToPayment}>Next</button>
+          <button className=" text-white px-6 py-2 rounded font-semibold transition" onClick={goToTrolley}>Back</button>
+          <button className=" text-white px-6 py-2 rounded font-semibold transition" onClick={goToPayment}>Next</button>
         </div>
       </div>
     </div>
@@ -293,19 +293,19 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
 const PaymentPage = ({ goToAddress }) => {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] w-full">
-      <div className="bg-[#242424] rounded-xl shadow-lg w-full max-w-xl p-8 relative mt-8 border border-[#353535]">
+      <div className="bg-[#23232a] rounded-xl shadow-lg w-full max-w-xl p-8 relative mt-8 border border-[#353535]">
         <div className="text-2xl font-bold text-gray-100 mb-6 tracking-wide">Payment</div>
         <div className="mb-4 text-gray-300">Select your payment method:</div>
-        <div className="flex flex-col gap-4 mb-8">
-          <label className="flex items-center gap-3 bg-[#353535] rounded px-4 py-3 cursor-pointer hover:bg-[#3d3d3d] transition text-gray-100">
+        <div className="flex flex-col gap-2 mb-8">
+          <label className="flex items-center gap-3  rounded px-4 py-3 cursor-pointer transition text-gray-100">
             <input type="radio" name="payment" defaultChecked className="accent-green-500" style={{ width: '1rem', height: '1rem' }} />
             <span className="font-medium">UPI / Netbanking</span>
           </label>
-          <label className="flex items-center gap-3 bg-[#353535] rounded px-4 py-3 cursor-pointer hover:bg-[#3d3d3d] transition text-gray-100">
+          <label className="flex items-center gap-3  rounded px-4 py-3 cursor-pointer transition text-gray-100">
             <input type="radio" name="payment" className="accent-green-500" style={{ width: '1rem', height: '1rem' }} />
             <span className="font-medium">Credit / Debit Card</span>
           </label>
-          <label className="flex items-center gap-3 bg-[#353535] rounded px-4 py-3 cursor-pointer hover:bg-[#3d3d3d] transition text-gray-100">
+          <label className="flex items-center gap-3  rounded px-4 py-3 cursor-pointer transition text-gray-100">
             <input type="radio" name="payment" className="accent-green-500" style={{ width: '1rem', height: '1rem' }} />
             <span className="font-medium">Cash on Delivery</span>
           </label>

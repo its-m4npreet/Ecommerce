@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import './footer.css';
 export const Footer = () => {
 return (
-    <footer className="bg-[#18181b] text-gray-200 pt-12 pb-6 border-t border-[#23232a]">
+    <footer className="bg-[#18181b] text-gray-200 pt-12 pb-6 border-t border-gray-700">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-10">
             {/* Branding & App Download */}
             <div className="md:col-span-2 flex flex-col gap-4">
@@ -71,7 +71,7 @@ return (
                 </div>
             </div>
         </div>
-        <div className="border-t border-[#23232a] mt-10 pt-4 text-center text-gray-400 text-xs md:text-sm">
+        <div className="border-t border-gray-700 mt-10 pt-4 text-center text-gray-400 text-xs md:text-sm">
             © {new Date().getFullYear()} E-Shop. All rights reserved.
         </div>
     </footer>

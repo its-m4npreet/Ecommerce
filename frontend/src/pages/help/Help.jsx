@@ -54,7 +54,7 @@ export const Help = () => {
           {faqData.map((faq, idx) => (
             <li
               key={idx}
-              className={`border border-blue-400 rounded-lg p-4 bg-[#23232a] transition-all duration-200 ${openFAQ === idx ? 'shadow-lg' : ''}`}
+              className={`border border-gray-700 rounded-lg p-4 bg-[transparent] transition-all duration-200 ${openFAQ === idx ? 'shadow-lg' : ''}`}
             >
               <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleFAQ(idx)}>
                 <span className="font-semibold text-white text-base">{faq.question}</span>
@@ -71,11 +71,20 @@ export const Help = () => {
           ))}
         </ul>
       </div>
+                {/* Cards Description Section */}
+                <div className="max-w-3xl w-full mb-10 text-center">
+                  <p className="text-gray-300 text-base md:text-lg mb-2">
+                    Explore the sections below for quick help on orders, shipping, returns, payments, account management, and contacting our support team.
+                  </p>
+                  <p className="text-gray-400 text-sm">
+                    Each card provides essential information and guidance to ensure a smooth shopping experience.
+                  </p>
+                </div>
 
       {/* Info Cards Section */}
       <div className="max-w-5xl w-full mb-12 flex flex-wrap gap-6 justify-center">
         {/* Order & Shipping */}
-        <div className="flex-1 min-w-[240px] max-w-xs border border-blue-400 rounded-2xl bg-[#23232a] p-6 mb-2 shadow-md">
+        <div className="flex-1 min-w-[240px] max-w-xs border border-gray-700 rounded-2xl bg-[transparent] p-6 mb-2 shadow-md">
           <h2 className="text-lg font-bold text-blue-400 mb-3 flex items-center gap-2"><FaShippingFast /> Order & Shipping</h2>
           <ul className="list-disc list-inside text-gray-300 space-y-2 text-sm">
             <li>Fast & free delivery across India on all orders.</li>
@@ -84,7 +93,7 @@ export const Help = () => {
           </ul>
         </div>
         {/* Returns & Refunds */}
-        <div className="flex-1 min-w-[240px] max-w-xs border border-blue-400 rounded-2xl bg-[#23232a] p-6 mb-2 shadow-md">
+        <div className="flex-1 min-w-[240px] max-w-xs border border-gray-700 rounded-2xl bg-[transparent] p-6 mb-2 shadow-md">
           <h2 className="text-lg font-bold text-blue-400 mb-3 flex items-center gap-2"><FaUndo /> Returns & Refunds</h2>
           <ul className="list-disc list-inside text-gray-300 space-y-2 text-sm">
             <li>Easy returns within 7 days of delivery.</li>
@@ -93,7 +102,7 @@ export const Help = () => {
           </ul>
         </div>
         {/* Payment & Security */}
-        <div className="flex-1 min-w-[240px] max-w-xs border border-blue-400 rounded-2xl bg-[#23232a] p-6 mb-2 shadow-md">
+        <div className="flex-1 min-w-[240px] max-w-xs border border-gray-700 rounded-2xl bg-[transparent] p-6 mb-2 shadow-md">
           <h2 className="text-lg font-bold text-blue-400 mb-3 flex items-center gap-2"><FaLock /> Payment & Security</h2>
           <ul className="list-disc list-inside text-gray-300 space-y-2 text-sm">
             <li>Multiple payment options: cards, UPI, net banking, COD.</li>
@@ -101,7 +110,7 @@ export const Help = () => {
           </ul>
         </div>
         {/* Account & Login Help */}
-        <div className="flex-1 min-w-[240px] max-w-xs border border-blue-400 rounded-2xl bg-[#23232a] p-6 mb-2 shadow-md">
+        <div className="flex-1 min-w-[240px] max-w-xs border border-gray-700 rounded-2xl bg-[transparent] p-6 mb-2 shadow-md">
           <h2 className="text-lg font-bold text-blue-400 mb-3 flex items-center gap-2"><FaUser /> Account & Login Help</h2>
           <ul className="list-disc list-inside text-gray-300 space-y-2 text-sm">
             <li>Create an account for faster checkout and order tracking.</li>
@@ -111,8 +120,8 @@ export const Help = () => {
         </div>
 
         {/* Contact Support */}
-        <div className="flex-1 min-w-[240px] max-w-xs border border-blue-400 rounded-2xl bg-[#23232a] p-7 mb-2 shadow-lg flex flex-col items-center">
-          <div className="flex items-center justify-center w-14 h-14 rounded-full bg-blue-900 mb-3 shadow-md">
+        <div className="flex-1 min-w-[240px] max-w-xs border border-gray-700 rounded-2xl bg-[transparent] p-7 mb-2 shadow-lg flex flex-col items-center">
+          <div className="flex items-center justify-center w-14 h-14 rounded-full border border-gray-700 mb-3 shadow-md">
             <FaEnvelope className="text-3xl text-white" />
           </div>
           <h2 className="text-lg font-extrabold text-blue-400 mb-2 text-center tracking-wide">Contact Support</h2>
@@ -120,7 +129,7 @@ export const Help = () => {
             <a href="mailto:support@eshop.com" className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition shadow">
               <FaEnvelope className="text-base" /> Email Support
             </a>
-            <a href="tel:+911234567890" className="flex items-center justify-center gap-2 bg-white/10 hover:bg-blue-600 hover:text-white text-blue-400 font-bold py-2 px-4 rounded-lg border border-blue-400 transition shadow">
+            <a href="tel:+911234567890" className="flex items-center justify-center gap-2 bg-[transparent] hover:bg-blue-600 hover:text-white text-blue-400 font-bold py-2 px-4 rounded-lg border border-blue-400 transition shadow">
               <MdAddCall className="text-base" /> Call Us
             </a>
           </div>
