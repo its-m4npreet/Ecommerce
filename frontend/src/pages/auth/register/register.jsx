@@ -11,25 +11,40 @@ const Register = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState("");
+    const [errMsg, setErrMsg] = useState("");
 
-    const handleSubmit = (e) => {
+
+
+    const handleSubmit = async(e) => {
         e.preventDefault();
-        if (!name || !email || !password || !confirmPassword) {
-            setError("Please fill in all fields.");
-            return;
-        }
-        if (password !== confirmPassword) {
-            setError("Passwords do not match.");
-            return;
-        }
-        if (password.length < 8) {
-            setError("Password must be at least 8 characters long.");
-            return;
-        }
-        setError("");
-        // Add registration logic here
-        alert(`Registered!\nName: ${name}\nEmail: ${email}`);
-    };
+  try {
+    const response = await fetch('http://localhost:8080/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+        confirmPassword
+      })
+    });
+    console.log(response);
+    const data = await response.json();
+    if (response.ok) {
+      // Registration successful
+      alert('Registration successful!');
+    } else {
+      // Show error from backend
+      console.log(data);
+        setErrMsg(data.message);
+      setError(data.error || 'Registration failed');
+    }
+  } catch (err) {
+      console.log('Network error', err);
+    setError('Network error', err.message);
+  
+  }
+};
 
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#18181b] to-[#23232a] px-4 ">
@@ -101,6 +116,9 @@ const Register = () => {
                             >
                                 {showPassword ? <FaEyeSlash className="w-4 h-4" /> : <FaEye className="w-4 h-4" />}
                             </span>
+                            {
+                            
+                            }
                         </div>
                     </div>
                     <div className="flex flex-col gap-2">
@@ -127,7 +145,17 @@ const Register = () => {
                                 {showConfirmPassword ? <FaEyeSlash className="w-4 h-4" /> : <FaEye className="w-4 h-4" />}
                             </span>
                         </div>
+                        {password && confirmPassword && password !== confirmPassword && (
+                        <div className="text-red-500 text-sm text-center -mt-1 animate-pulse">
+                            Passwords do not match
+                        </div>
+                    ) || (errMsg && (
+                        <div className="text-red-500 text-sm text-center -mt-1 animate-pulse">
+                            {errMsg}
+                        </div>
+                    ))}
                     </div>
+                    
                     <button
                         type="submit"
                         className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-lg shadow transition-all text-lg tracking-wide"

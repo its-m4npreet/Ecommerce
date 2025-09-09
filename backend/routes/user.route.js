@@ -1,18 +1,14 @@
-const express =require(express);
+const express = require("express");
+const {
+  register,
+} = require("../controllers/userController");
 
-const { userModel } = require("../models/user.model");
+const userRouter = express.Router();
 
-const userRoute=express.Router();
+userRouter.post("/register", register);
+// userRouter.post("/login", userLogin);
+// Public profile by username
+// userRouter.get("/profile/:username", getUserProfileByUsername);
 
-userRoute.post("/user/register", async (req, res) => {
-  try {
-    console.log(req.body);
-    const newUser = new userModel(req.body);
-    // await newUser.save();
-    res.status(201).send("User registered successfully");
-  } catch (error) {
-    res.status(500).send("Error registering user");
-  }
-});
+module.exports = { userRouter };
 
-module.exports = { userRoute };

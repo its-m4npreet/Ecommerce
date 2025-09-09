@@ -1,6 +1,8 @@
+
+
 export const getProducts = async () => {
   try {
-    const response = await fetch("https://api.escuelajs.co/api/v1/products");
+    const response = await fetch("http://localhost:8080/api/products");
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }

@@ -39,16 +39,16 @@ function validatePasswordStrength(password) {
   const isStrongEnough = strength >= 75;
 
   return {
-    isValid: errors.length === 0 && isStrongEnough,
+    isValid: errors.length === 0 ,
     errors: errors,
     strength: strength,
   };
 }
 
-const signUp = async (req, res) => {
+const register = async (req, res) => {
   try {
-    let { name, username, email, password, avatar } = req.body;
-
+    let { name, email, password ,username, avatar} = req.body;
+    console.log(req.body);
     // Validation
     if (!name || !email || !password) {
       return res
@@ -60,7 +60,7 @@ const signUp = async (req, res) => {
     if (!username) {
       username = email.split("@")[0].toLowerCase();
       // Check if auto-generated username exists, add numbers if needed
-      let baseUsername = username;
+      let baseUsername = name;
       let counter = 1;
       while (await userModel.findOne({ username: username.toLowerCase() })) {
         username = `${baseUsername}${counter}`;
@@ -142,93 +142,93 @@ const signUp = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    if (error.code === 11000) {
-      // Handle duplicate key error
-      const field = Object.keys(error.keyPattern)[0];
-      return res.status(400).json({ message: `${field} already exists` });
-    }
+    // if (error.code === 11000) {
+    //   // Handle duplicate key error
+    //   // const field = Object.keys(error.keyPattern)[0];
+    //   return res.status(400).json({ message: `${field} already exists` });
+    // }
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
-const userLogin = async (req, res) => {
-  const { email, password } = req.body;
+// const userLogin = async (req, res) => {
+//   const { email, password } = req.body;
 
-  const userExist = await userModel.findOne({ email });
-  console.log(userExist);
-  if (!userExist) {
-    res.status(404).send({ error: "User not found with this email" });
-    return;
-  }
+//   const userExist = await userModel.findOne({ email });
+//   console.log(userExist);
+//   if (!userExist) {
+//     res.status(404).send({ error: "User not found with this email" });
+//     return;
+//   }
 
-  try {
-    bcrypt.compare(password, userExist.password, (err, result) => {
-      const token = jwt.sign(
-        {
-          userId: userExist._id,
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: "5h" }
-      );
+//   try {
+//     bcrypt.compare(password, userExist.password, (err, result) => {
+//       const token = jwt.sign(
+//         {
+//           userId: userExist._id,
+//         },
+//         process.env.JWT_SECRET,
+//         { expiresIn: "5h" }
+//       );
 
-      if (err) {
-        console.error("Error during bcrypt comparison:", err);
-        res.status(500).json({ error: "Error during bcrypt comparison" });
-        return;
-      }
-      if (result) {
-        res.status(200).send({
-          token: token,
-          email: userExist.email,
-          user: {
-            id: userExist._id,
-            name: userExist.name,
-            username: userExist.username,
-            email: userExist.email,
-            avatar: userExist.avatar,
-            isVerified: userExist.isVerified,
-          },
-        });
-      } else {
-        res.status(401).send({ error: "Invalid credentials" });
-      }
-    });
-  } catch (error) {
-    console.error("Error during user signup:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
+//       if (err) {
+//         console.error("Error during bcrypt comparison:", err);
+//         res.status(500).json({ error: "Error during bcrypt comparison" });
+//         return;
+//       }
+//       if (result) {
+//         res.status(200).send({
+//           token: token,
+//           email: userExist.email,
+//           user: {
+//             id: userExist._id,
+//             name: userExist.name,
+//             username: userExist.username,
+//             email: userExist.email,
+//             avatar: userExist.avatar,
+//             isVerified: userExist.isVerified,
+//           },
+//         });
+//       } else {
+//         res.status(401).send({ error: "Invalid credentials" });
+//       }
+//     });
+//   } catch (error) {
+//     console.error("Error during user signup:", error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// };
 
 // Get public user profile by username
-const getUserProfileByUsername = async (req, res) => {
-  try {
-    const { username } = req.params;
-    if (!username) {
-      return res.status(400).json({ message: "Username is required" });
-    }
-    const user = await userModel
-      .findOne({ username: username.toLowerCase() })
-      .select("-password -__v");
-    console.log("user found:", user);
+// const getUserProfileByUsername = async (req, res) => {
+//   try {
+//     const { username } = req.params;
+//     if (!username) {
+//       return res.status(400).json({ message: "Username is required" });
+//     }
+//     const user = await userModel
+//       .findOne({ username: username.toLowerCase() })
+//       .select("-password -__v");
+//     console.log("user found:", user);
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.status(200).json({
-      id: user._id,
-      name: user.name,
-      username: user.username,
-      email: user.email, // Remove this if you want to hide email
-      avatar: user.avatar,
-      isVerified: user.isVerified,
-      createdAt: user.createdAt,
-      bio: user.bio || "",
-      // Add more public fields as needed
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+//     res.status(200).json({
+//       id: user._id,
+//       name: user.name,
+//       username: user.username,
+//       email: user.email, // Remove this if you want to hide email
+//       avatar: user.avatar,
+//       isVerified: user.isVerified,
+//       createdAt: user.createdAt,
+//       bio: user.bio || "",
+//       // Add more public fields as needed
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
 
-module.exports = { signUp, userLogin, getUserProfileByUsername };
+module.exports = { register};

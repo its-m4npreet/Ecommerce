@@ -30,11 +30,9 @@ const userSchema = new Schema(
       type: String,
       default: process.env.Default_Avatar,
     },
-    phoneNumber:{
-        type:String,
-        required:true,
-        unique:true
-    }
+  phoneNumber:{
+    type:String
+  }
   },
   {
     timestamps: true,

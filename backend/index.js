@@ -4,17 +4,24 @@ const express = require("express");
 const app = express();
 const { connection } = require("./configs/db");
 const cors = require("cors");
-// const { productRouter } = require("./routes/blog.route");
-// Load environment variables from .env file
+const { userRouter } = require("./routes/user.route.js");
 
 const port = process.env.PORT;
 app.use(cors());
 app.use(express.json());
-// app.use("/user", userRouter);
+
 // app.use("/api/product", productRouter);
 app.get("/", (req, res) => {
   res.send("Welcome to E-commerce Backend 😁");
 });
+const productRoutes = require('./routes/productRoutes');
+app.use('/api/products', productRoutes);
+
+// auth route
+
+app.use("/auth", userRouter);
+
+
 
 app.listen(port, async () => {
   try {
