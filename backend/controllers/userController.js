@@ -151,53 +151,54 @@ const register = async (req, res) => {
   }
 };
 
-// const userLogin = async (req, res) => {
-//   const { email, password } = req.body;
+const userLogin = async (req, res) => {
+  const { email, password } = req.body;
 
-//   const userExist = await userModel.findOne({ email });
-//   console.log(userExist);
-//   if (!userExist) {
-//     res.status(404).send({ error: "User not found with this email" });
-//     return;
-//   }
+  const userExist = await userModel.findOne({ email });
+  console.log(userExist);
+  if (!userExist) {
+    res.status(404).send({ error: "User not found with this email" });
+    return;
+  }
 
-//   try {
-//     bcrypt.compare(password, userExist.password, (err, result) => {
-//       const token = jwt.sign(
-//         {
-//           userId: userExist._id,
-//         },
-//         process.env.JWT_SECRET,
-//         { expiresIn: "5h" }
-//       );
+  try {
+    bcrypt.compare(password, userExist.password, (err, result) => {
+      console.log(result);
+      const token = jwt.sign(
+        {
+          userId: userExist._id,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "5h" }
+      );
 
-//       if (err) {
-//         console.error("Error during bcrypt comparison:", err);
-//         res.status(500).json({ error: "Error during bcrypt comparison" });
-//         return;
-//       }
-//       if (result) {
-//         res.status(200).send({
-//           token: token,
-//           email: userExist.email,
-//           user: {
-//             id: userExist._id,
-//             name: userExist.name,
-//             username: userExist.username,
-//             email: userExist.email,
-//             avatar: userExist.avatar,
-//             isVerified: userExist.isVerified,
-//           },
-//         });
-//       } else {
-//         res.status(401).send({ error: "Invalid credentials" });
-//       }
-//     });
-//   } catch (error) {
-//     console.error("Error during user signup:", error);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// };
+      if (err) {
+        console.error("Error during bcrypt comparison:", err);
+        res.status(500).json({ error: "Error during bcrypt comparison" });
+        return;
+      }
+      if (result) {
+        res.status(200).send({
+          token: token,
+          email: userExist.email,
+          user: {
+            id: userExist._id,
+            name: userExist.name,
+            username: userExist.username,
+            email: userExist.email,
+            avatar: userExist.avatar,
+            isVerified: userExist.isVerified,
+          },
+        });
+      } else {
+        res.status(401).send({ error: "Invalid credentials" });
+      }
+    });
+  } catch (error) {
+    console.error("Error during user signup:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 // Get public user profile by username
 // const getUserProfileByUsername = async (req, res) => {
@@ -231,4 +232,4 @@ const register = async (req, res) => {
 //   }
 // };
 
-module.exports = { register};
+module.exports = { register ,userLogin};

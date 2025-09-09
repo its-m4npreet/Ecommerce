@@ -10,8 +10,33 @@ const Login = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState("");
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async(e) => {
 		e.preventDefault();
+
+		try {
+			const res=await fetch('http://localhost:8080/auth/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ email, password }),
+			});
+			console.log(res);
+    const data = await res.json();
+    if (res.ok) {
+      // Login successful
+      alert('Login successful!');
+    } else {
+      // Show error from backend
+      console.log(data);
+      setError(data.error || 'Login failed');
+    }
+		} catch (err) {
+      console.log('Network error', err);
+    setError('Network error', err.message);
+  
+  }
+		
 		if (!email || !password) {
 			setError("Please enter both email and password.");
 			return;
