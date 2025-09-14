@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { FaUser, FaSignInAlt, FaSearch ,FaHome ,FaHeart, FaShoppingCart, FaOpencart} from "react-icons/fa";
 import { FaCircleInfo } from "react-icons/fa6";
 import { GiShoppingBag } from "react-icons/gi";
@@ -5,12 +6,23 @@ import { IoHelpCircle } from "react-icons/io5";
 import "./navBar.css";
 // import logo from "/logo.png"
 import { NavLink , useLocation } from "react-router-dom";
-import { useState } from "react";
 export const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const location = useLocation();
     const isLoginPage = location.pathname === "/auth/login" || location.pathname === "/auth/login";
     const isRegisterPage = location.pathname === "/auth/register" || location.pathname === "/auth/register";
+
+    // Check localStorage for user or token on every render
+    React.useEffect(() => {
+        const checkAuth = () => {
+            const user = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            setIsLoggedIn(!!user || !!token);
+        };
+        checkAuth();
+        window.addEventListener('storage', checkAuth);
+        return () => window.removeEventListener('storage', checkAuth);
+    });
 
     return (
         <nav className="border-b border-gray-700 flex h-14 w-full justify-evenly items-center shadow-lg gap-5 bg-[#18181b]">

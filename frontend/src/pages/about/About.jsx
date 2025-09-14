@@ -5,16 +5,11 @@ import { FaShippingFast, FaHeadset, FaLock, FaUndo, FaUsers, FaStore } from "rea
 export const About = () => (
   <div className="min-h-screen bg-[#18181b] flex flex-col items-center py-0 px-4 font-sans">
     {/* Hero Banner */}
-    {/* <div className="w-full h-32 md:h-72 relative flex items-center justify-center mb-10 rounded-b-3xl overflow-hidden">
-      <img
-        src="https://images.unsplash.com/photo-1515168833906-d2a3b82b302b?auto=format&fit=crop&w=1200&q=80"
-        alt="About E-Shop"
-        className="absolute inset-0 w-full h-full object-cover opacity-40"
-      />
+    <div className="w-full h-20 md:h-32 relative flex items-center justify-center rounded-b-3xl overflow-hidden">
       <h2 className="relative z-10 text-4xl md:text-5xl font-extrabold text-white text-center px-6 py-2 rounded-xl tracking-tight drop-shadow-xl">
         About <span className="text-blue-400">E-Shop</span>
       </h2>
-    </div> */}
+    </div>
 
     {/* Description */}
     <div className="max-w-2xl w-full text-center mb-10 mt-10">

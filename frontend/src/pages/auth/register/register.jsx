@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { FaUserAlt, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUserPlus } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
     const [name, setName] = useState("");
@@ -12,7 +12,7 @@ const Register = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState("");
     const [errMsg, setErrMsg] = useState("");
-
+    const navigate = useNavigate();
 
 
     const handleSubmit = async(e) => {
@@ -30,15 +30,22 @@ const Register = () => {
     });
     console.log(response);
     const data = await response.json();
-    if (response.ok) {
-      // Registration successful
-      alert('Registration successful!');
-    } else {
-      // Show error from backend
-      console.log(data);
-        setErrMsg(data.message);
-      setError(data.error || 'Registration failed');
-    }
+            if (response.ok) {
+                // Registration successful
+                if (data.user) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                }
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                }
+                alert('Registration successful!');
+                navigate('/'); // Redirect to main page
+            } else {
+                // Show error from backend
+                console.log(data);
+                setErrMsg(data.message);
+                setError(data.error || 'Registration failed');
+            }
   } catch (err) {
       console.log('Network error', err);
     setError('Network error', err.message);
@@ -162,11 +169,7 @@ const Register = () => {
                     >
                         Register
                     </button>
-                    {/* <div className="flex items-center gap-2 my-2">
-                        <div className="flex-1 h-px bg-gray-700" />
-                        <span className="text-gray-500 text-xs">or</span>
-                        <div className="flex-1 h-px bg-gray-700" />
-                    </div> */}
+                    
                     <div className="text-center text-gray-400 text-sm mt-2">
                         Already have an account? <Link to="/auth/login" className="text-blue-400 hover:underline">Login</Link>
                     </div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaUserAlt, FaLock, FaEye, FaEyeSlash, FaFacebookF } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 const Login = () => {
@@ -9,41 +9,39 @@ const Login = () => {
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState("");
+	const navigate = useNavigate();
 
-	const handleSubmit = async(e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		try {
-			const res=await fetch('http://localhost:8080/auth/login', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ email, password }),
-			});
-			console.log(res);
-    const data = await res.json();
-    if (res.ok) {
-      // Login successful
-      alert('Login successful!');
-    } else {
-      // Show error from backend
-      console.log(data);
-      setError(data.error || 'Login failed');
-    }
-		} catch (err) {
-      console.log('Network error', err);
-    setError('Network error', err.message);
-  
-  }
-		
 		if (!email || !password) {
 			setError("Please enter both email and password.");
 			return;
 		}
-		setError("");
-		// Add your login logic here
-		alert(`Email: ${email}\nPassword: ${password}`);
+
+		try {
+			const res = await fetch('http://localhost:8080/auth/login', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email, password }),
+			});
+			const data = await res.json();
+			if (res.ok) {
+				if (data.user) {
+					localStorage.setItem('user', JSON.stringify(data.user));
+				}
+				if (data.token) {
+					localStorage.setItem('token', data.token);
+				}
+				alert('Login successful!');
+				navigate('/'); // Redirect to main page
+			} else {
+				setError(data.error || 'Login failed');
+			}
+		} catch (err) {
+			setError('Network error');
+		}
+			
 	};
 
 	return (

@@ -13,14 +13,16 @@ export const Product = () => {
 	useEffect(() => {
 		async function fetchRelated() {
 			try {
-				const res = await fetch("https://api.escuelajs.co/api/v1/products");
+				const res = await fetch("http://localhost:8080/api/products");
+				if (!res.ok) throw new Error("Failed to fetch products");
 				const all = await res.json();
 				// Filter by same category, exclude current product
 				const rel = all.filter(
-					p => p.id !== product.id && p.category && product.category && p.category.name === product.category.name
+					p => p.id !== product.id && p.category && product.category && p.category.name?.toLowerCase() === product.category.name?.toLowerCase()
 				).slice(0, 6); // limit to 6
 				setRelated(rel);
 			} catch (e) {
+				console.error("Error fetching related products:", e);
 				setRelated([]);
 			}
 		}
@@ -59,18 +61,18 @@ export const Product = () => {
 							</a>
 						)}
 					</p>
-					<button className="mt-auto bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-200 text-lg">Add to Cart</button>
+					<button className="mt-auto bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-200 text-lg">Add to Trolley</button>
 				</div>
 			</div>
 
 			<div className="relatedImages w-full max-w-5xl">
-				<h2 className="text-lg font-bold mb-4 text-white">Related Products</h2>
+				<h2 className="text-lg font-bold mb-4 text-white">RELATED PRODUCTS</h2>
 				<div className="grid grid-cols-2 md:grid-cols-3 gap-4">
 					{related.length === 0 && (
-						<div className="col-span-full text-gray-400 text-center">No related products found.</div>
+						<div className="col-span-full text-gray-400 text-center">NO RELATED PRODUCTS FOUND</div>
 					)}
 					{related.map(rp => (
-						<NavLink to={`/shop/${rp.id}`} key={rp.id} className="block">
+						<NavLink to={`/product/${rp.id}`} key={rp.id} className="block">
 							<div className="bg-gray-900 rounded-lg shadow flex flex-col items-center p-4 hover:shadow-xl transition">
 								<img src={Array.isArray(rp.images) ? rp.images[0] : rp.images} alt={rp.title} className="object-contain w-full h-35 mb-2 rounded" />
 								<div className="text-white font-semibold text-base truncate w-full text-center">{rp.title}</div>
