@@ -21,6 +21,7 @@ export const Product = () => {
                 ).slice(0, 6); // limit to 6
                 setRelated(rel);
             } catch (e) {
+                console.error("Error fetching related products:", e);
                 setRelated([]);
             }
         }
