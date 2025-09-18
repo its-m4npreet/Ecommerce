@@ -341,7 +341,7 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
 
 const PaymentPage = ({ goToAddress }) => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] w-full">
+    <div className="flex flex-col items-center justify-center min-h-[60vh] w-full ">
       <div className="bg-[#23232a] rounded-xl shadow-lg w-full max-w-xl p-8 relative mt-8 border border-[#353535]">
         <div className="text-2xl font-bold text-gray-100 mb-6 tracking-wide">Payment</div>
         <div className="mb-4 text-gray-300">Select your payment method:</div>
@@ -361,7 +361,8 @@ const PaymentPage = ({ goToAddress }) => {
         </div>
         <div className="flex justify-between gap-4">
           <button className="bg-[#353535] text-gray-200 px-6 py-2 rounded font-semibold transition hover:bg-[#444] border border-gray-600" onClick={goToAddress}>Back </button>
-          <button className=" text-white px-6 py-2 rounded font-semibold transition">Pay Now</button>
+          <button className=" text-white px-6 py-2 rounded font-semibold transition relative">
+            Pay Now</button>
         </div>
       </div>
     </div>

@@ -1,9 +1,10 @@
 import React from "react";
 import { Form } from "react-router-dom";
 import "./AddressForm.css";
+import badgeColors from "@material-tailwind/react/theme/components/badge/badgeColors";
 
 const AddressForm = ({ form, onChange, onSubmit, onCancel }) => (
-  <Form className=" form bg-[#353535] rounded-lg p-4 mb-4 flex flex-col gap-4" onSubmit={onSubmit}>
+  <Form className=" form bg-[#18181b] rounded-lg p-4 mb-4 flex flex-col gap-4" onSubmit={onSubmit}>
     <div className="name relative">
       <input name="name" value={form.name} onChange={onChange} placeholder="" className="flex-1 px-2 py-1 rounded bg-[#232323] text-gray-200 border border-gray-600" required />
       <label htmlFor="name">Name</label>
@@ -48,8 +49,8 @@ const AddressForm = ({ form, onChange, onSubmit, onCancel }) => (
     </div>
    
     <div className="flex gap-2 justify-end">
-      <button type="button" className="px-4 py-1 rounded bg-gray-600 text-white" onClick={onCancel}>Cancel</button>
-      <button type="submit" className="px-4 py-1 rounded  text-white">Save</button>
+      <button type="button" className="px-4 py-1 rounded bg-gray-600 text-white " style={{background:"#bd2d2d"}} onClick={onCancel}>Cancel</button>
+      <button type="submit" className="px-4 py-1 rounded  text-white" style={{background:"#23232a"}}>Save</button>
     </div>
   </Form>
 );
