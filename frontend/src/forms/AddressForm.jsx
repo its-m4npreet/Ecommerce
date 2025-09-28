@@ -1,7 +1,7 @@
 import React from "react";
 import { Form } from "react-router-dom";
 import "./AddressForm.css";
-import badgeColors from "@material-tailwind/react/theme/components/badge/badgeColors";
+// import badgeColors from "@material-tailwind/react/theme/components/badge/badgeColors";
 
 const AddressForm = ({ form, onChange, onSubmit, onCancel }) => (
   <Form className=" form bg-[#18181b] rounded-lg p-4 mb-4 flex flex-col gap-4" onSubmit={onSubmit}>

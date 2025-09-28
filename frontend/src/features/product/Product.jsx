@@ -6,9 +6,16 @@ export const Product = () => {
 	const product = useLoaderData();
 	const [showFullDesc, setShowFullDesc] = useState(false);
 	const [related, setRelated] = useState([]);
+	const [isInTrolley, setIsInTrolley] = useState(false);
 	const maxDescLength = 120;
 	const isLong = product.description && product.description.length > maxDescLength;
 	const shortDesc = isLong ? product.description.slice(0, maxDescLength) + "..." : product.description;
+
+	// Check if product is already in trolley
+	useEffect(() => {
+		const trolleyIds = JSON.parse(localStorage.getItem('trolley')) || [];
+		setIsInTrolley(trolleyIds.includes(product.id));
+	}, [product.id]);
 
 	useEffect(() => {
 		async function fetchRelated() {
@@ -28,6 +35,25 @@ export const Product = () => {
 		}
 		fetchRelated();
 	}, [product]);
+
+	const handleAddToTrolley = () => {
+		const trolleyIds = JSON.parse(localStorage.getItem('trolley')) || [];
+		
+		if (isInTrolley) {
+			// Remove from trolley
+			const updatedTrolleyIds = trolleyIds.filter(id => id !== product.id);
+			localStorage.setItem('trolley', JSON.stringify(updatedTrolleyIds));
+			setIsInTrolley(false);
+		} else {
+			// Add to trolley
+			trolleyIds.push(product.id);
+			localStorage.setItem('trolley', JSON.stringify(trolleyIds));
+			setIsInTrolley(true);
+		}
+	};
+	// console.log(product);
+
+
 
 	return (
 		<div className="flex  flex-col justify-center items-center min-h-[80vh] bg-black py-12 gap-5">
@@ -61,7 +87,16 @@ export const Product = () => {
 							</a>
 						)}
 					</p>
-					<button className="mt-auto bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-200 text-lg">Add to Trolley</button>
+					<button 
+						onClick={handleAddToTrolley}
+						className={`mt-auto font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-200 text-lg ${
+							isInTrolley 
+								? 'bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white' 
+								: 'bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white'
+						}`}
+					>
+						{isInTrolley ? 'Remove from Trolley' : 'Add to Trolley'}
+					</button>
 				</div>
 			</div>
 

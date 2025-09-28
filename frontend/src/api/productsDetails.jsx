@@ -1,6 +1,9 @@
 export async function productsDetails({ params }) {
   const { productId } = params; // <-- must match the route param name!
-  const res = await fetch(`https://api.escuelajs.co/api/v1/products/${productId}`);
+  console.log(productId);
+  const res = await fetch(`http://localhost:8080/api/products/${productId}`);
   if (!res.ok) throw new Error("Network response was not ok");
-  return res.json();
+  const data = await res.json();
+  console.log(data);
+  return data;
 }

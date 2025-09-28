@@ -36,7 +36,13 @@ const Trolley = () => {
   useEffect(() => {
     fetch('http://localhost:8080/api/products')
       .then(res => res.json())
-      .then(data => setProducts(data))
+      .then(data => {
+        setProducts(data);
+        // Store products globally for access in payment
+        if (typeof window !== 'undefined') {
+          window.productsState = data;
+        }
+      })
       .catch(err => console.error('Error fetching products:', err));
   }, []);
 
@@ -340,6 +346,127 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
 }
 
 const PaymentPage = ({ goToAddress }) => {
+  const [showSuccessPopup, setShowSuccessPopup] = React.useState(false);
+  const [isProcessing, setIsProcessing] = React.useState(false);
+
+  // Debug: Log popup state changes
+  React.useEffect(() => {
+    console.log('showSuccessPopup changed to:', showSuccessPopup);
+  }, [showSuccessPopup]);
+
+  const handlePay = async () => {
+    setIsProcessing(true);
+    console.log('Starting payment process...');
+    
+    const trolleyIds = JSON.parse(localStorage.getItem('trolley')) || [];
+    const user = JSON.parse(localStorage.getItem('user'));
+    
+    console.log('Trolley IDs:', trolleyIds);
+    console.log('User:', user);
+    
+    // Get all products from the current state (assuming products are available globally)
+    let allProducts = [];
+    if (typeof window !== 'undefined' && window.productsState) {
+      allProducts = window.productsState;
+    }
+    
+    // Get detailed product information for ordered items
+    const orderedItems = trolleyIds.map(id => {
+      const product = allProducts.find(p => p.id === id);
+      if (product) {
+        return {
+          id: product.id,
+          title: product.title,
+          price: product.price,
+          priceInINR: typeof product.price === 'number' ? Math.round(product.price * 80) : 0,
+          image: Array.isArray(product.images) ? product.images[0] : (product.images || product.image),
+          category: product.category,
+          description: product.description,
+          quantity: 1 // Default quantity
+        };
+      }
+      return null;
+    }).filter(item => item !== null);
+    
+    console.log('=== ALL ORDERED ITEMS ===');
+    console.log('Total items:', orderedItems.length);
+    orderedItems.forEach((item, index) => {
+      console.log(`Item ${index + 1}:`, {
+        ID: item.id,
+        Title: item.title,
+        'Price (USD)': item.price,
+        'Price (INR)': item.priceInINR,
+        Category: item.category,
+        Quantity: item.quantity,
+        Image: item.image
+      });
+    });
+    
+    const totalAmount = orderedItems.reduce((sum, item) => sum + item.priceInINR, 0);
+    console.log('Total Order Amount (INR):', totalAmount);
+    console.log('========================');
+    
+    // Prepare order data for backend
+    const orderData = {
+      userId: user._id || user.id,
+      products: orderedItems.map(item => ({
+        product: {
+          id: item.id,
+          title: item.title,
+          price: item.price,
+          priceInINR: item.priceInINR,
+          image: item.image,
+          category: item.category,
+          description: item.description
+        },
+        quantity: item.quantity,
+        price: item.priceInINR
+      })),
+      total: totalAmount,
+      status: 'confirmed',
+      orderDate: new Date().toISOString()
+    };
+    
+    try {
+      console.log('Sending order to backend:', orderData);
+      
+      // Send order to backend
+      const response = await fetch('http://localhost:8080/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      });
+      
+      if (response.ok) {
+        const savedOrder = await response.json();
+        console.log('Order saved successfully:', savedOrder);
+        
+        // Clear trolley from localStorage
+        localStorage.removeItem('trolley');
+        
+        setIsProcessing(false);
+        setShowSuccessPopup(true);
+        console.log('Order successful! Showing popup...');
+        
+        // Redirect to account page order history after 3 seconds
+        setTimeout(() => {
+          localStorage.setItem('accountSection', 'orders');
+          window.location.href = '/account';
+        }, 3000);
+      } else {
+        setIsProcessing(false);
+        const errorData = await response.json();
+        console.error('Failed to save order:', errorData);
+        alert('Failed to place order. Please try again.');
+      }
+    } catch (error) {
+      setIsProcessing(false);
+      console.error('Error placing order:', error);
+      alert('Error placing order. Please check your connection and try again.');
+    }
+  }
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] w-full ">
       <div className="bg-[#23232a] rounded-xl shadow-lg w-full max-w-xl p-8 relative mt-8 border border-[#353535]">
@@ -361,9 +488,40 @@ const PaymentPage = ({ goToAddress }) => {
         </div>
         <div className="flex justify-between gap-4">
           <button className="bg-[#353535] text-gray-200 px-6 py-2 rounded font-semibold transition hover:bg-[#444] border border-gray-600" onClick={goToAddress}>Back </button>
-          <button className=" text-white px-6 py-2 rounded font-semibold transition relative">
-            Pay Now</button>
-        </div>
+          <button 
+            className={`text-white px-6 py-2 rounded font-semibold transition relative ${
+              isProcessing ? 'bg-gray-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+            }`} 
+            onClick={handlePay}
+            disabled={isProcessing}
+          >
+            {isProcessing ? 'Processing...' : 'Pay Now'}
+          </button>
+        </div>        {/* Success Popup */}
+        {showSuccessPopup && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-[#23232a] rounded-xl p-8 w-96 max-w-md mx-4 text-center border border-gray-600">
+              {/* Green Checkmark */}
+              <div className="mb-6">
+                <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              </div>
+              
+              {/* Success Message */}
+              <h3 className="text-2xl font-bold text-white mb-2">Order Placed Successfully!</h3>
+              <p className="text-gray-300 mb-4">Thank you for your purchase. You will be redirected to your order history shortly.</p>
+              
+              {/* Loading indicator */}
+              <div className="flex items-center justify-center gap-2 text-gray-400">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-500"></div>
+                <span className="text-sm">Redirecting...</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

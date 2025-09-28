@@ -21,6 +21,9 @@ app.use('/api/products', productRoutes);
 
 app.use("/auth", userRouter);
 
+const orderRoutes = require('./routes/orderRoutes');
+app.use('/api/orders', orderRoutes);
+
 
 
 app.listen(port, async () => {

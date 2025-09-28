@@ -15,6 +15,24 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get single product by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const productId = parseInt(req.params.id);
+    const products = await Product;
+    const product = products.find(p => p.id === productId);
+    
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    
+    res.json(product);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Add more product routes (create, update, delete) as needed
 
 module.exports = router;
