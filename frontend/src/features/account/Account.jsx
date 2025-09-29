@@ -212,7 +212,7 @@ const OrdersHistory = () => {
 									       </div>
 									       <div className="flex items-center gap-4">
 										       <span className="text-gray-400 text-sm">Qty: {item.quantity}</span>
-										       <span className="text-gray-200 font-semibold">₹{item.product?.price?.toLocaleString()}</span>
+										       <span className="text-gray-200 font-semibold">₹{item.price?.toLocaleString()}</span>
 									       </div>
 								       </div>
 							       </div>
