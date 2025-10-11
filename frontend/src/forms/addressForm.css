@@ -3,23 +3,43 @@
     top: 50%;
     left: 15px;
     color: #7a7979;
-    font-size: 1rem;
+    font-size: 0.875rem;
     transition: all 0.3s ease;
     padding: 0 5px;
     pointer-events: none;
     z-index: 1;
-      transform: translateY(-50%);
-      font-weight: bold;
+    transform: translateY(-50%);
+    font-weight: bold;
 }
+
+/* Mobile responsive font size */
+@media (min-width: 640px) {
+    .form label {
+        font-size: 1rem;
+    }
+}
+
 .form input {
     width: 100%;
     box-sizing: border-box;
-    padding: 8px;
+    padding: 10px 12px;
+    min-height: 44px; /* Ensures good touch targets on mobile */
 }
+
+/* Desktop padding */
+@media (min-width: 640px) {
+    .form input {
+        padding: 8px 12px;
+        min-height: auto;
+    }
+}
+
 .form input:focus {
     border-color: #646cff;
     outline: none;
+    box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.2);
 }
+
 .form input:focus + label,
 .form input:not(:placeholder-shown) + label {
     width: fit-content;
@@ -28,5 +48,14 @@
     background-color: #18181b;
     color: white;
     border-radius: 8px;
-      
+    font-size: 0.75rem;
+    padding: 2px 6px;
+}
+
+/* Desktop label size when focused/filled */
+@media (min-width: 640px) {
+    .form input:focus + label,
+    .form input:not(:placeholder-shown) + label {
+        font-size: 0.875rem;
+    }
 }

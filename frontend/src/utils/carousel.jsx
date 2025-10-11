@@ -31,14 +31,14 @@ function BannerCarousel({ imagePosition = 'top' }) {
     autoplaySpeed: 3000 // 3 seconds
   };
   return (
-    <div className="my-8 relative max-w-7xl mx-auto">
+    <div className="my-4 sm:my-6 lg:my-8 relative max-w-7xl mx-auto px-2 sm:px-4">
       <Slider {...settings}>
         {slides.map((slide, idx) => (
           <div key={idx} className="relative">
           <img
             src={slide.img}
             alt={slide.alt}
-            className="w-full h-64 object-cover rounded-xl shadow-lg drop-shadow-2xl opacity-[80%]"
+            className="w-full h-40 sm:h-48 md:h-56 lg:h-64 xl:h-72 object-cover rounded-lg sm:rounded-xl shadow-lg drop-shadow-2xl opacity-[80%]"
             style={{ objectPosition: imagePosition }}
           />
           </div>

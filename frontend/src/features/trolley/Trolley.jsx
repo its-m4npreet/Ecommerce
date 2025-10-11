@@ -75,12 +75,44 @@ const Trolley = () => {
 
   return (
     <div className=" bg-[#18181b] flex flex-col items-center py-10 px-2">
-      <div className="status flex items-center gap-2 text-sm mb-6">
-        <span className={` ${step === 0 ? "font-semibold text-gray-200" : "text-gray-400"}`}>TROLLEY</span>
+      {/* Mobile Progress Steps */}
+      <div className="block sm:hidden w-full max-w-sm mb-6 px-4">
+        <div className="flex justify-between items-center relative">
+          <div className="absolute top-3 left-0 right-0 h-0.5 bg-gray-600"></div>
+          <div className="flex justify-between w-full relative">
+            {[
+              { name: 'TROLLEY', stepNum: 0 },
+              { name: 'ADDRESS', stepNum: 1 },
+              { name: 'PAYMENT', stepNum: 2 }
+            ].map((item, index) => (
+              <div key={item.name} className="flex flex-col items-center">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold mb-1 ${
+                  step === item.stepNum 
+                    ? 'bg-blue-600 text-white' 
+                    : step > item.stepNum 
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-gray-600 text-gray-300'
+                }`}>
+                  {step > item.stepNum ? '✓' : index + 1}
+                </div>
+                <span className={`text-xs text-center ${
+                  step === item.stepNum ? "font-semibold text-gray-200" : "text-gray-400"
+                }`}>
+                  {item.name}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Progress Steps */}
+      <div className="hidden sm:flex items-center gap-2 text-sm mb-6">
+        <span className={`${step === 0 ? "font-semibold text-gray-200" : "text-gray-400"}`}>TROLLEY</span>
         <span className="text-gray-500 select-none">-------------------</span>
-        <span className={` ${step === 1 ? "font-semibold  text-gray-200" : "text-gray-400"}`}>ADDRESS</span>
+        <span className={`${step === 1 ? "font-semibold text-gray-200" : "text-gray-400"}`}>ADDRESS</span>
         <span className="text-gray-500 select-none">-------------------</span>
-        <span className={` ${step === 2 ? "font-semibold  text-gray-200" : "text-gray-400"}`}>PAYMENT</span>
+        <span className={`${step === 2 ? "font-semibold text-gray-200" : "text-gray-400"}`}>PAYMENT</span>
       </div>
     {/* <TrolleyPage /> */}
   {activePage === 'trolley' && <TrolleyPage trolley={trolley} handleRemoveItem={handleRemoveItem} goToAddress={() => setActivePage('address')} />}
@@ -162,18 +194,18 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
   const [donateAmount, setDonateAmount] = React.useState(0);
   const totalAmount = Math.floor(totalMRP + discount + platformFee + (donateChecked ? donateAmount : 0));
   return (
-    <div className="flex flex-col md:flex-row gap-6 w-full max-w-5xl ">
+    <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 w-full max-w-5xl">
       {/* Left: Address and Items */}
-      <div className=" p-6 flex-1 w-[500px]">
+      <div className="p-3 sm:p-4 lg:p-6 flex-1 w-full lg:w-[500px]">
         {/* Address */}
-        <div className="flex justify-between items-center mb-4">
-          <div>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2 sm:gap-0">
+          <div className="flex-1">
             <div className="text-gray-200 text-sm">
               DELIVER TO: <span className="font-semibold">{userData.name}</span>
             </div>
-            <div className="text-gray-400 text-xs">{userData.address}</div>
+            <div className="text-gray-400 text-xs break-words pr-2">{userData.address}</div>
           </div>
-          <button className=" px-4 py-1 rounded" style={{background :"none",border:"1px solid gray", cursor:"pointer"}} onClick={goToAddress}>
+          <button className="px-3 sm:px-4 py-1 rounded text-sm whitespace-nowrap" style={{background :"none",border:"1px solid gray", cursor:"pointer"}} onClick={goToAddress}>
             change
           </button>
         </div>
@@ -191,59 +223,129 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
           {trolley.length > 0 ? trolley.map((item) => (
             <div
               key={item.id}
-              className="relative flex bg-[#23232a] rounded-lg p-4 mb-4 items-center border border-gray-700"
+              className="relative flex flex-col sm:flex-row bg-[#23232a] rounded-lg p-3 sm:p-4 mb-4 border border-gray-700"
             >
-              {/* Product Image */}
-              <div className="w-20 h-20 bg-gray-700 rounded mr-4 flex items-center justify-center overflow-hidden">
-                <NavLink to={`/product/${item.id}`}  className="block w-full h-full">
-                <img
-                  src={Array.isArray(item.images) ? item.images[0] : (item.images || item.image)}
-                  alt={item.title}
-                  className="w-full h-full object-cover rounded"
-                />
-                </NavLink>
-              </div>
-              {/* Product Details */}
-              <div className="flex-1 min-w-0">
-                <div className="relative flex justify-between items-start">
-                  <div className="text-gray-100 font-semibold truncate max-w-[180px]">
-                    {item.title}
+              {/* Mobile Layout */}
+              <div className="block sm:hidden">
+                <div className="flex items-start gap-3">
+                  {/* Left side - Image only */}
+                  <div className="w-20 h-20 bg-gray-700 rounded overflow-hidden flex-shrink-0 mt-3">
+                    <NavLink to={`/product/${item.id}`} className="block w-full h-full">
+                      <img
+                        src={Array.isArray(item.images) ? item.images[0] : (item.images || item.image)}
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </NavLink>
                   </div>
-                  <button
-                    className="absolute right-[-6px] top-[-10px] text-lg ml-2" style={{background :"none",border:"none",outline:"none", cursor:"auto"}}
-                  >
-                    <FaTrashAlt className=" text-gray-400 hover:text-red-500 cursor-pointer"  title="Remove" onClick={() => handleRemoveItem(item.id)}/>
-                  </button>
+                  
+                  {/* Right side - All other details */}
+                  <div className="flex-1 min-w-0">
+                    {/* Title and Delete Button */}
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="text-gray-100 font-semibold text-sm leading-tight pr-2 flex-1">{item.title}</h3>
+                      <button className="flex-shrink-0" style={{background: "none", border: "none", outline: "none"}}>
+                        <FaTrashAlt 
+                          className="text-gray-400 hover:text-red-500 cursor-pointer w-4 h-4" 
+                          title="Remove" 
+                          onClick={() => handleRemoveItem(item.id)}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Size and Quantity */}
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {trolleyDetails[item.id]?.size && (
+                        <span className="bg-[#444] text-gray-200 text-xs px-2 py-0.5 rounded">
+                          Size: {trolleyDetails[item.id].size}
+                        </span>
+                      )}
+                      <span className="bg-[#444] text-gray-200 text-xs px-2 py-0.5 rounded">
+                        Qty: {trolleyDetails[item.id]?.quantity || 1}
+                      </span>
+                    </div>
+                    
+                    {/* Price */}
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-gray-300 text-base font-semibold">
+                        &#8377;{Math.round(getINRPrice(item)-200)}
+                      </span>
+                      <span className="text-gray-400 text-sm line-through">
+                        &#8377;{getINRPrice(item).toLocaleString()}
+                      </span>
+                    </div>
+                    
+                    {/* Delivery */}
+                    <div className="space-y-1 text-xs">
+                      <div className="text-gray-400">
+                        Delivery{" "}
+                        <span className="font-semibold text-gray-200">Tue, 3 Sep</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-gray-400 text-xs mb-2 truncate">
-                  High quality, latest model, best price 
+              </div>
+
+              {/* Desktop Layout */}
+              <div className="hidden sm:flex items-center w-full">
+                {/* Product Image */}
+                <div className="w-20 h-20 bg-gray-700 rounded mr-4 flex items-center justify-center overflow-hidden flex-shrink-0">
+                  <NavLink to={`/product/${item.id}`} className="block w-full h-full">
+                    <img
+                      src={Array.isArray(item.images) ? item.images[0] : (item.images || item.image)}
+                      alt={item.title}
+                      className="w-full h-full object-cover rounded"
+                    />
+                  </NavLink>
                 </div>
-                <div className="flex gap-2 mb-1">
-                  {trolleyDetails[item.id]?.size && (
+                
+                {/* Product Details */}
+                <div className="flex-1 min-w-0">
+                  <div className="relative flex justify-between items-start">
+                    <div className="text-gray-100 font-semibold truncate max-w-[180px]">
+                      {item.title}
+                    </div>
+                    <button
+                      className="absolute right-[-6px] top-[-10px] text-lg ml-2" 
+                      style={{background: "none", border: "none", outline: "none", cursor: "auto"}}
+                    >
+                      <FaTrashAlt 
+                        className="text-gray-400 hover:text-red-500 cursor-pointer" 
+                        title="Remove" 
+                        onClick={() => handleRemoveItem(item.id)}
+                      />
+                    </button>
+                  </div>
+                  <div className="text-gray-400 text-xs mb-2 truncate">
+                    High quality, latest model, best price 
+                  </div>
+                  <div className="flex gap-2 mb-1">
+                    {trolleyDetails[item.id]?.size && (
+                      <span className="bg-[#444] text-gray-200 text-xs px-2 py-0.5 rounded min-w-[48px] text-center">
+                        Size: {trolleyDetails[item.id].size}
+                      </span>
+                    )}
                     <span className="bg-[#444] text-gray-200 text-xs px-2 py-0.5 rounded min-w-[48px] text-center">
-                      Size: {trolleyDetails[item.id].size}
+                      Qty: {trolleyDetails[item.id]?.quantity || 1}
                     </span>
-                  )}
-                  <span className="bg-[#444] text-gray-200 text-xs px-2 py-0.5 rounded min-w-[48px] text-center">
-                    Qty: {trolleyDetails[item.id]?.quantity || 1}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-gray-300 text-sm font-semibold">
-                    &#8377;{Math.round(getINRPrice(item)-200)}
-                  </span>
-                  <span className="text-gray-400 text-xs line-through">
-                    &#8377;{getINRPrice(item).toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-green-400 mb-1">
-                  <GiReturnArrow className="mr-1" />7 days return available
-                </div>
-                <div className="text-gray-400 text-xs">
-                  Delivery{" "}
-                  <span className="font-semibold text-gray-200">
-                    Tue, 3 Sep
-                  </span>
+                  </div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-gray-300 text-sm font-semibold">
+                      &#8377;{Math.round(getINRPrice(item)-200)}
+                    </span>
+                    <span className="text-gray-400 text-xs line-through">
+                      &#8377;{getINRPrice(item).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-green-400 mb-1">
+                    <GiReturnArrow className="mr-1" />7 days return available
+                  </div>
+                  <div className="text-gray-400 text-xs">
+                    Delivery{" "}
+                    <span className="font-semibold text-gray-200">
+                      Tue, 3 Sep
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -267,21 +369,20 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
         </div>
       </div>
       {/* Right: Discount, Donation, Price Summary */}
-      <div  >
-       <div className="sticky top-4 bg-[#23232a] rounded-xl py-6 px-4 w-full max-w-xs shadow-lg flex flex-col gap-4">
+      <div className="w-full lg:w-auto">
+       <div className="sticky top-4 bg-[#23232a] rounded-xl py-4 sm:py-6 px-3 sm:px-4 w-full lg:max-w-xs shadow-lg flex flex-col gap-3 sm:gap-4">
          {/* Discount */}
         <div>
-          <div className="text-gray-200 font-semibold mb-2">
+          <div className="text-gray-200 font-semibold mb-2 text-sm sm:text-base">
             Apply Discount
           </div>
-          <div className="flex gap-2 mb-2">
+          <div className="flex flex-col sm:flex-row gap-2 mb-2">
             <input
               type="text"
               placeholder="coupon code"
-              className=" bg-[#232323] border border-gray-600 rounded px-2 py-1 text-gray-200 flex-1 "
-              style={{ height: "42px" }}
+              className="bg-[#232323] border border-gray-600 rounded px-2 py-2 text-gray-200 flex-1 text-sm"
             />
-            <button className="bg-green-700 text-white px-4 py-1 rounded">
+            <button className="bg-green-700 text-white px-3 sm:px-4 py-2 rounded text-sm whitespace-nowrap">
               Apply
             </button>
           </div>
@@ -291,17 +392,17 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
           <div className="text-gray-400 text-xs mb-2">
             SUPPORT TRANSFORMATIVE SOCIAL WORK IN INDIA
           </div>
-          <label className="flex items-center gap-5 text-gray-300 text-sm mb-2">
+          <label className="flex items-start gap-3 text-gray-300 text-xs sm:text-sm mb-2">
             <input
               type="checkbox"
-              className="accent-green-600"
+              className="accent-green-600 mt-0.5 flex-shrink-0"
               style={{ width: "15px", height: "15px" }}
               checked={donateChecked}
               onChange={e => setDonateChecked(e.target.checked)}
             />
-            <span>DONATE AND MAKE A DIFFERENCE</span>
+            <span className="leading-tight">DONATE AND MAKE A DIFFERENCE</span>
           </label>
-          <div className="flex gap-1 mb-1">
+          <div className="grid grid-cols-2 sm:flex gap-1 mb-1">
             {[10, 50, 100, 500].map((amt, i) => (
               <button
                 key={i}
@@ -313,42 +414,44 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
               </button>
             ))}
           </div>
-          <div className=" cursor-pointer text-red-400">know more</div>
+          <div className="cursor-pointer text-red-400 text-xs">know more</div>
         </div>
         {/* Price Details */}
         <div>
-          <div className="text-gray-300 text-sm mb-1">
-            PRICE DETAILS ( {trolley.length} item )
+          <div className="text-gray-300 text-sm mb-2">
+            PRICE DETAILS ( {trolley.length} item{trolley.length !== 1 ? 's' : ''} )
           </div>
-          <div className="flex justify-between text-gray-400  mb-1">
-            <span>Total MRP</span>
-            <span>&#8377;{totalMRP}</span>
-          </div>
-          <div className="flex justify-between text-gray-400  mb-1">
-            <span>Discount on MRP</span>
-            <span className="text-green-400">&#8377;{discount}</span>
-          </div>
-          <div className="flex justify-between text-gray-400  mb-1">
-            <span>coupon Discount</span>
-            <span>{coupon}</span>
-          </div>
-          <div className="flex justify-between text-gray-400  mb-1">
-            <span>plateform fees</span>
-            <span className="text-red-400">&#8377;{platformFee}</span>
-          </div>
-          {donateChecked && donateAmount > 0 && (
-            <div className="flex justify-between text-gray-400 mb-1">
-              <span>Donated Amount</span>
-              <span className="text-green-400">&#8377;{donateAmount}</span>
+          <div className="space-y-1 text-sm">
+            <div className="flex justify-between text-gray-400">
+              <span>Total MRP</span>
+              <span>&#8377;{totalMRP.toLocaleString()}</span>
             </div>
-          )}
-          <hr className="my-2 border-gray-700" />
-          <div className="flex justify-between text-gray-200 font-semibold mb-2">
+            <div className="flex justify-between text-gray-400">
+              <span>Discount on MRP</span>
+              <span className="text-green-400">&#8377;{discount}</span>
+            </div>
+            <div className="flex justify-between text-gray-400">
+              <span>Coupon Discount</span>
+              <span>{coupon}</span>
+            </div>
+            <div className="flex justify-between text-gray-400">
+              <span>Platform Fees</span>
+              <span className="text-red-400">&#8377;{platformFee}</span>
+            </div>
+            {donateChecked && donateAmount > 0 && (
+              <div className="flex justify-between text-gray-400">
+                <span>Donated Amount</span>
+                <span className="text-green-400">&#8377;{donateAmount}</span>
+              </div>
+            )}
+          </div>
+          <hr className="my-3 border-gray-700" />
+          <div className="flex justify-between text-gray-200 font-semibold mb-3 text-base sm:text-lg">
             <span>Total Amount</span>
-            <span>&#8377; {totalAmount}</span>
+            <span>&#8377;{totalAmount.toLocaleString()}</span>
           </div>
           <button 
-            className={`w-full rounded py-2 font-semibold transition-colors ${
+            className={`w-full rounded py-2 sm:py-3 font-semibold transition-colors text-sm sm:text-base ${
               trolley.length > 0 
                 ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer' 
                 : 'bg-gray-600 text-gray-400 cursor-not-allowed disabled:cursor-not-allowed'
@@ -654,15 +757,15 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] w-full">
-      <div className="bg-[#23232a] rounded-lg shadow-lg w-full max-w-xl p-6 relative mt-8">
+    <div className="flex flex-col items-center justify-center min-h-[60vh] w-full px-4">
+      <div className="bg-[#23232a] rounded-lg shadow-lg w-full max-w-xl p-4 sm:p-6 relative mt-4 sm:mt-8">
         <div className="flex justify-between items-center mb-4">
           <div className="text-lg font-semibold ">Select Delivery Address</div>
         </div>
         <div className="text-xs text-gray-500 font-semibold mb-2">SELECT DELIVERY ADDRESS</div>
         {/* Address Cards */}
         {loading ? (
-          <div className="border rounded-lg p-4 flex flex-col gap-2 bg-[transparent] relative mb-2">
+          <div className="border rounded-lg p-3 sm:p-4 flex flex-col gap-2 bg-[transparent] relative mb-2">
             <div className="animate-pulse">
               <div className="h-4 bg-gray-600 rounded mb-2"></div>
               <div className="h-3 bg-gray-600 rounded mb-2"></div>
@@ -671,26 +774,31 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
           </div>
         ) : (
           addresses.map((address) => (
-            <div key={address._id} className="border rounded-lg p-4 bg-[transparent] relative mb-2">
+            <div key={address._id} className="border rounded-lg p-3 sm:p-4 bg-[transparent] relative mb-2">
               {/* Header with radio button, name, tags and action buttons */}
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-start gap-2 flex-1 min-w-0">
                   <input 
                     type="radio" 
                     name="selectedAddress"
                     checked={selectedAddressId === address._id}
                     onChange={() => setSelectedAddressId(address._id)}
+                    className="mt-0.5 flex-shrink-0"
                     style={{ accentColor: 'green', width: '1rem', height: '1rem' }} 
                   />
-                  <span className="font-semibold ">{address.name}</span>
-                  <span className="text-xs px-2 py-0.5 rounded-full ml-2 bg-green-300 text-black">{address.tag}</span>
-                  {address.isDefault && (
-                    <span className="text-xs px-2 py-0.5 rounded-full ml-2 bg-blue-300 text-black">DEFAULT</span>
-                  )}
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 min-w-0 flex-1">
+                    <span className="font-semibold text-sm sm:text-base">{address.name}</span>
+                    <div className="flex gap-1 flex-wrap">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-green-300 text-black">{address.tag}</span>
+                      {address.isDefault && (
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-blue-300 text-black">DEFAULT</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 
-                {/* Action buttons moved to top right */}
-                <div className="flex gap-2">
+                {/* Action buttons */}
+                <div className="flex gap-1 sm:gap-2 flex-shrink-0">
                   <button 
                     className="border border-gray-300 p-1.5 rounded hover:bg-gray-100 transition flex items-center justify-center" 
                     title="Edit Address"
@@ -711,7 +819,7 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
                       });
                     }}
                   >
-                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                   </button>
@@ -721,7 +829,7 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
                       title="Delete Address"
                       onClick={() => handleDeleteAddress(address._id)}
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
                     </button>
@@ -730,10 +838,10 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
               </div>
               
               {/* Address details */}
-              <div className="text-sm mb-2">
+              <div className="text-xs sm:text-sm mb-2 pl-6 text-gray-300 break-words">
                 {address.address}
               </div>
-              <div className="text-sm">
+              <div className="text-xs sm:text-sm pl-6 text-gray-300">
                 Mobile: <span className="font-semibold">{address.mobile}</span>
               </div>
             </div>
@@ -748,26 +856,34 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
             onCancel={() => setShowForm(false)}
           />
         )}
-        <div className="border border-dashed rounded-lg p-4 font-semibold cursor-pointer transition mb-4" onClick={() => { 
-          setShowForm(true);
-          setEditingId('new');
-          setForm({ 
-            name: '', 
-            mobile: '', 
-            'H.no': '', 
-            city: '', 
-            state: '', 
-            zipCode: '', 
-            apartment: '', 
-            tag: 'HOME' 
-          }); 
-        }}>
+        <div 
+          className="border border-dashed rounded-lg p-3 sm:p-4 font-semibold cursor-pointer transition mb-4 text-center text-sm sm:text-base" 
+          onClick={() => { 
+            setShowForm(true);
+            setEditingId('new');
+            setForm({ 
+              name: '', 
+              mobile: '', 
+              'H.no': '', 
+              city: '', 
+              state: '', 
+              zipCode: '', 
+              apartment: '', 
+              tag: 'HOME' 
+            }); 
+          }}
+        >
           + Add New Address
         </div>
-        <div className="flex justify-between gap-2">
-          <button className=" text-white px-6 py-2 rounded font-semibold transition" onClick={goToTrolley}>Back</button>
+        <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-2">
           <button 
-            className={`text-white px-6 py-2 rounded font-semibold transition ${
+            className="w-full sm:w-auto text-white px-4 sm:px-6 py-2 rounded font-semibold transition border border-gray-600 hover:bg-gray-700" 
+            onClick={goToTrolley}
+          >
+            Back
+          </button>
+          <button 
+            className={`w-full sm:w-auto text-white px-4 sm:px-6 py-2 rounded font-semibold transition ${
               selectedAddressId ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-500 cursor-not-allowed'
             }`}
             onClick={() => {
@@ -793,6 +909,58 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
 const PaymentPage = ({ goToAddress }) => {
   const [showSuccessPopup, setShowSuccessPopup] = React.useState(false);
   const [isProcessing, setIsProcessing] = React.useState(false);
+  const [selectedPayment, setSelectedPayment] = React.useState('upi');
+  const [paymentDetails, setPaymentDetails] = React.useState({
+    upiDetails: [],
+    savedCards: [],
+    codAvailable: true
+  });
+  const [loading, setLoading] = React.useState(true);
+
+  // Fetch payment details from backend
+  React.useEffect(() => {
+    const fetchPaymentDetails = async () => {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user && (user._id || user.id)) {
+          const response = await fetch(`http://localhost:8080/api/users/${user._id || user.id}/payment-methods`);
+          if (response.ok) {
+            const data = await response.json();
+            setPaymentDetails(data);
+          } else {
+            // Fallback data if API doesn't exist
+            setPaymentDetails({
+              upiDetails: [
+                { id: 'upi1', upiId: 'user@paytm', provider: 'Paytm', isDefault: true },
+                { id: 'upi2', upiId: 'user@gpay', provider: 'Google Pay', isDefault: false }
+              ],
+              savedCards: [
+                { id: 'card1', lastFour: '1234', type: 'Visa', isDefault: true },
+                { id: 'card2', lastFour: '5678', type: 'Mastercard', isDefault: false }
+              ],
+              codAvailable: true
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching payment details:', error);
+        // Set fallback data
+        setPaymentDetails({
+          upiDetails: [
+            { id: 'upi1', upiId: 'user@paytm', provider: 'Paytm', isDefault: true }
+          ],
+          savedCards: [
+            { id: 'card1', lastFour: '1234', type: 'Visa', isDefault: true }
+          ],
+          codAvailable: true
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPaymentDetails();
+  }, []);
 
   // Debug: Log popup state changes
   React.useEffect(() => {
@@ -965,28 +1133,140 @@ const PaymentPage = ({ goToAddress }) => {
     }
   }
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] w-full ">
-      <div className="bg-[#23232a] rounded-xl shadow-lg w-full max-w-xl p-8 relative mt-8 border border-[#353535]">
-        <div className="text-2xl font-bold text-gray-100 mb-6 tracking-wide">Payment</div>
-        <div className="mb-4 text-gray-300">Select your payment method:</div>
-        <div className="flex flex-col gap-2 mb-8">
-          <label className="flex items-center gap-3  rounded px-4 py-3 cursor-pointer transition text-gray-100">
-            <input type="radio" name="payment" defaultChecked className="accent-green-500" style={{ width: '1rem', height: '1rem' }} />
-            <span className="font-medium">UPI / Netbanking</span>
+    <div className="flex flex-col items-center justify-center min-h-[60vh] w-full px-4">
+      <div className="bg-[#23232a] rounded-xl shadow-lg w-full max-w-xl p-4 sm:p-6 lg:p-8 relative mt-4 sm:mt-8 border border-[#353535]">
+        <div className="text-xl sm:text-2xl font-bold text-gray-100 mb-4 sm:mb-6 tracking-wide">Payment</div>
+        <div className="mb-4 text-gray-300 text-sm sm:text-base">Select your payment method:</div>
+        <div className="flex flex-col gap-2 mb-6">
+          <label className="flex items-center gap-3 rounded px-3 sm:px-4 py-3 cursor-pointer transition text-gray-100 hover:bg-gray-800">
+            <input 
+              type="radio" 
+              name="payment" 
+              value="upi"
+              checked={selectedPayment === 'upi'}
+              onChange={(e) => setSelectedPayment(e.target.value)}
+              className="accent-green-500 flex-shrink-0" 
+              style={{ width: '1rem', height: '1rem' }} 
+            />
+            <span className="font-medium text-sm sm:text-base">UPI / Netbanking</span>
           </label>
-          <label className="flex items-center gap-3  rounded px-4 py-3 cursor-pointer transition text-gray-100">
-            <input type="radio" name="payment" className="accent-green-500" style={{ width: '1rem', height: '1rem' }} />
-            <span className="font-medium">Credit / Debit Card</span>
+          <label className="flex items-center gap-3 rounded px-3 sm:px-4 py-3 cursor-pointer transition text-gray-100 hover:bg-gray-800">
+            <input 
+              type="radio" 
+              name="payment" 
+              value="credit"
+              checked={selectedPayment === 'credit'}
+              onChange={(e) => setSelectedPayment(e.target.value)}
+              className="accent-green-500 flex-shrink-0" 
+              style={{ width: '1rem', height: '1rem' }} 
+            />
+            <span className="font-medium text-sm sm:text-base">Credit / Debit Card</span>
           </label>
-          <label className="flex items-center gap-3  rounded px-4 py-3 cursor-pointer transition text-gray-100">
-            <input type="radio" name="payment" className="accent-green-500" style={{ width: '1rem', height: '1rem' }} />
-            <span className="font-medium">Cash on Delivery</span>
+          <label className="flex items-center gap-3 rounded px-3 sm:px-4 py-3 cursor-pointer transition text-gray-100 hover:bg-gray-800">
+            <input 
+              type="radio" 
+              name="payment" 
+              value="cod"
+              checked={selectedPayment === 'cod'}
+              onChange={(e) => setSelectedPayment(e.target.value)}
+              className="accent-green-500 flex-shrink-0" 
+              style={{ width: '1rem', height: '1rem' }} 
+            />
+            <span className="font-medium text-sm sm:text-base">Cash on Delivery</span>
           </label>
         </div>
-        <div className="flex justify-between gap-4">
-          <button className="bg-[#353535] text-gray-200 px-6 py-2 rounded font-semibold transition hover:bg-[#444] border border-gray-600" onClick={goToAddress}>Back </button>
+
+        {/* Payment Details Section - Backend Data Display */}
+        <div className="mb-4 sm:mb-6">
+          {loading ? (
+            <div className="bg-[#2a2a2a] rounded-lg p-3">
+              <div className="animate-pulse space-y-2">
+                <div className="h-4 bg-gray-600 rounded w-1/3"></div>
+                <div className="h-8 bg-gray-600 rounded"></div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* UPI/Netbanking Details */}
+              {selectedPayment === 'upi' && (
+                <div className="bg-[#2a2a2a] rounded-lg p-3">
+                  <h3 className="text-gray-200 font-medium mb-2 text-sm">UPI Details</h3>
+                  {paymentDetails.upiDetails && paymentDetails.upiDetails.length > 0 ? (
+                    <div className="space-y-2">
+                      {paymentDetails.upiDetails.map((upi) => (
+                        <div key={upi.id} className="flex items-center gap-3 p-2 bg-[#18181b] rounded">
+                          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span className="text-green-600 text-sm font-bold">₹</span>
+                          </div>
+                          <div className="flex-1">
+                            <div className="text-gray-200 text-sm font-medium">{upi.upiId}</div>
+                            <div className="text-gray-400 text-xs">{upi.provider}</div>
+                          </div>
+                          {upi.isDefault && <span className="text-xs px-2 py-0.5 bg-green-600 text-white rounded">Primary</span>}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-gray-400 text-sm p-2 bg-[#18181b] rounded">
+                      <p>No UPI details found</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Credit/Debit Card Details */}
+              {selectedPayment === 'credit' && (
+                <div className="bg-[#2a2a2a] rounded-lg p-3">
+                  <h3 className="text-gray-200 font-medium mb-2 text-sm">Saved Cards</h3>
+                  {paymentDetails.savedCards && paymentDetails.savedCards.length > 0 ? (
+                    <div className="space-y-2">
+                      {paymentDetails.savedCards.map((card) => (
+                        <div key={card.id} className="flex items-center gap-3 p-2 bg-[#18181b] rounded">
+                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span className="text-blue-600 text-xs font-bold">💳</span>
+                          </div>
+                          <div className="flex-1">
+                            <div className="text-gray-200 text-sm font-medium">{card.type} •••• {card.lastFour}</div>
+                            <div className="text-gray-400 text-xs">Expires {card.expiry || 'XX/XX'}</div>
+                          </div>
+                          {card.isDefault && <span className="text-xs px-2 py-0.5 bg-blue-600 text-white rounded">Primary</span>}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-gray-400 text-sm p-2 bg-[#18181b] rounded">
+                      <p>No saved cards found</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Cash on Delivery Details */}
+              {selectedPayment === 'cod' && (
+                <div className="bg-[#2a2a2a] rounded-lg p-3">
+                  <h3 className="text-gray-200 font-medium mb-2 text-sm">Cash on Delivery</h3>
+                  {paymentDetails.codAvailable ? (
+                    <div className="text-sm text-gray-300">
+                      <p className="mb-1">💵 Pay when delivered to your doorstep</p>
+                      <p className="text-xs text-gray-400">Additional COD charges: ₹40 • Orders up to ₹50,000</p>
+                    </div>
+                  ) : (
+                    <p className="text-gray-400 text-sm">Cash on Delivery not available for this order.</p>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+        <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4">
           <button 
-            className={`text-white px-6 py-2 rounded font-semibold transition relative ${
+            className="w-full sm:w-auto bg-[#353535] text-gray-200 px-4 sm:px-6 py-2 rounded font-semibold transition hover:bg-[#444] border border-gray-600 text-sm sm:text-base" 
+            onClick={goToAddress}
+          >
+            Back
+          </button>
+          <button 
+            className={`w-full sm:w-auto text-white px-4 sm:px-6 py-2 rounded font-semibold transition relative text-sm sm:text-base ${
               isProcessing ? 'bg-gray-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
             }`} 
             onClick={handlePay}

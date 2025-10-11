@@ -36,26 +36,29 @@ export const GetProducts = ({ selectedCategory = "All" }) => {
         });
     };
     return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
             {msg && (
-                <div className="fixed top-6 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-6 py-2 rounded-xl shadow-lg z-50 text-lg font-semibold animate-bounce">{msg}</div>
+                <div className="fixed top-4 sm:top-6 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 sm:px-6 py-2 rounded-lg sm:rounded-xl shadow-lg z-50 text-sm sm:text-base lg:text-lg font-semibold animate-bounce max-w-xs sm:max-w-none text-center">{msg}</div>
             )}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
                 {filteredProducts && filteredProducts.length > 0 ? filteredProducts.map(product => (
-                    <div className="bg-[#2e2e30] rounded-xl shadow-lg overflow-hidden flex flex-col hover:shadow-2xl transition-shadow duration-300 min-h-[441.5px] drop-shadow-2xl" key={product.id}>
+                    <div className="bg-[#2e2e30] rounded-lg sm:rounded-xl shadow-lg overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-300 hover:scale-105 min-h-[300px] sm:min-h-[380px] lg:min-h-[441.5px] drop-shadow-2xl" key={product.id}>
                         <div className="aspect-w-1 aspect-h-1 bg-gray-100 flex items-center justify-center">
                             <NavLink to={`/product/${product.id}`}  className="block w-full h-full">
-                                <img src={product.images} alt={product.title} className="object-cover w-full h-[337.5px]" />
+                                <img src={product.images} alt={product.title} className="product-image object-cover w-full h-[200px] sm:h-[250px] lg:h-[337.5px]" />
                             </NavLink>
                         </div>
-                        <div className="p-4 flex-1 flex flex-col justify-between">
-                            <h2 className="text-lg font-semibold text-white mb-2 truncate">{product.title}</h2>
-                            <div className="flex justify-between items-center">
-                                <div className="text-blue-600 font-bold text-xl mb-2">₹{(product.price * 80).toLocaleString()}</div>
+                        <div className="p-2 sm:p-3 lg:p-4 flex-1 flex flex-col justify-between">
+                            <div className="flex-1">
+                                <h2 className="text-sm sm:text-base lg:text-lg font-semibold text-white mb-1 sm:mb-2 truncate leading-tight">{product.title}</h2>
+                                <p className="text-xs sm:text-sm text-gray-400 mb-2 sm:mb-3 line-clamp-2 leading-relaxed">{product.description}</p>
+                            </div>
+                            <div className="flex justify-between items-center mt-auto">
+                                <div className="text-blue-600 font-bold text-sm sm:text-lg lg:text-xl mb-1 sm:mb-2">₹{(product.price * 80).toLocaleString()}</div>
                                 <div className="like">
                                     <span className="flex items-center justify-center text-gray-400 hover:text-gray-200 transition hover:cursor-pointer" title="Add to Wishlist">
                                         <FaRegHeart
-                                            className={`w-5 h-5 ${wishlist.includes(product.id) ? 'text-red-500' : ''} transition-transform duration-500 ${animatingId === product.id ? 'scale-125 animate-bounce' : ''}`}
+                                            className={`w-4 h-4 sm:w-5 sm:h-5 ${wishlist.includes(product.id) ? 'text-red-500' : ''} transition-transform duration-500 ${animatingId === product.id ? 'scale-125 animate-bounce' : ''}`}
                                             onClick={() => toggleLike(product.id)}
                                         />
                                     </span>
@@ -64,7 +67,7 @@ export const GetProducts = ({ selectedCategory = "All" }) => {
                         </div>
                     </div>
                 )) : (
-                    <div className="col-span-full text-center text-gray-400 text-lg py-12">No products found for this category.</div>
+                    <div className="col-span-full text-center text-gray-400 text-base sm:text-lg py-8 sm:py-12">No products found for this category.</div>
                 )}
             </div>
         </div>

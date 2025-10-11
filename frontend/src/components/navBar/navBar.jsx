@@ -140,7 +140,7 @@ export const Navbar = () => {
 
             {/* Mobile Menu Dropdown */}
             {isMobileMenuOpen && (
-                <div className="lg:hidden absolute top-14 left-0 right-0 bg-[#18181b] border-b border-gray-700 shadow-lg z-50">
+                <div className="lg:hidden absolute top-14 left-0 right-0 bg-[#18181b] border-b border-gray-700 shadow-lg z-[9999]">
                     <div className="px-4 py-4 space-y-3">
                         {isLoginPage ? (
                             <NavLink 

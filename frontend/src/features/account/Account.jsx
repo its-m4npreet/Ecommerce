@@ -214,7 +214,7 @@ export const Account = () => {
     <div className="bg-[#18181b] flex flex-col items-center py-4 md:py-10 px-2 md:px-4 min-h-screen">
       <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-4 md:gap-8">
         {/* Sidebar */}
-        <div className="bg-[#18181b] border-gray-700 rounded-2xl p-4 md:p-8 flex flex-col items-center w-full lg:min-w-[300px] lg:max-w-xs">
+        <div className="bg-[#18181b] border-gray-700 rounded-2xl p-4 md:p-8 flex flex-col items-center w-full lg:min-w-[300px] lg:max-w-xs lg:border-r lg:border-gray-600 lg:rounded-r-none">
           {userLoading ? (
             <div className="text-gray-400 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400 mx-auto mb-2"></div>
@@ -266,103 +266,46 @@ export const Account = () => {
           ) : (
             <div className="text-gray-400">Redirecting to login...</div>
           )}
-          {/* Desktop FAQ-Style Navigation */}
+          {/* Desktop Simple Navigation */}
           <nav className="hidden lg:flex flex-col gap-3 w-full">
             {/* Personal Info Section */}
-            <div className="bg-white/5 border border-gray-700 rounded-xl overflow-hidden backdrop-blur-sm">
-              <button
-                onClick={() => setActiveSection(activeSection === "personal" ? "" : "personal")}
-                className={`w-full flex items-center justify-between px-5 py-4 text-left transition-all duration-200 ${
-                  activeSection === "personal" 
-                    ? "bg-cyan-400/10 text-cyan-400" 
-                    : "text-gray-300 hover:bg-gray-800/30"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <FaUser className={`text-xl ${activeSection === "personal" ? "text-cyan-400" : "text-gray-400"}`} />
-                  <span className="font-semibold text-xl">Personal Info</span>
-                </div>
-                <svg 
-                  className={`w-6 h-6 transition-transform duration-300 ${
-                    activeSection === "personal" ? 'rotate-180 text-cyan-400' : 'text-gray-400'
-                  }`}
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {activeSection === "personal" && (
-                <div className="px-5 py-5 bg-cyan-400/5 border-t border-cyan-400/20 animate-in slide-in-from-top-1">
-                  <PersonalInfo user={user} onUserUpdate={setUser} />
-                </div>
-              )}
-            </div>
+            <button
+              onClick={() => setActiveSection("personal")}
+              className={`w-full flex items-center gap-3 px-5 py-4 text-left transition-all duration-200 rounded-xl ${
+                activeSection === "personal" 
+                  ? "bg-cyan-400/20 text-cyan-400 border border-cyan-400/50" 
+                  : "bg-white/5 border border-gray-700 text-gray-300 hover:bg-gray-800/30"
+              }`}
+            >
+              <FaUser className={`text-xl ${activeSection === "personal" ? "text-cyan-400" : "text-gray-400"}`} />
+              <span className="font-semibold text-xl">Personal Info</span>
+            </button>
 
             {/* Payment Methods Section */}
-            <div className="bg-white/5 border border-gray-700 rounded-xl overflow-hidden backdrop-blur-sm">
-              <button
-                onClick={() => setActiveSection(activeSection === "billing" ? "" : "billing")}
-                className={`w-full flex items-center justify-between px-5 py-4 text-left transition-all duration-200 ${
-                  activeSection === "billing" 
-                    ? "bg-cyan-400/10 text-cyan-400" 
-                    : "text-gray-300 hover:bg-gray-800/30"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <FaCreditCard className={`text-xl ${activeSection === "billing" ? "text-cyan-400" : "text-gray-400"}`} />
-                  <span className="font-semibold text-xl">Payment Methods</span>
-                </div>
-                <svg 
-                  className={`w-6 h-6 transition-transform duration-300 ${
-                    activeSection === "billing" ? 'rotate-180 text-cyan-400' : 'text-gray-400'
-                  }`}
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {activeSection === "billing" && (
-                <div className="px-5 py-5 bg-cyan-400/5 border-t border-cyan-400/20 animate-in slide-in-from-top-1">
-                  <PaymentMethods user={user} />
-                </div>
-              )}
-            </div>
+            <button
+              onClick={() => setActiveSection("billing")}
+              className={`w-full flex items-center gap-3 px-5 py-4 text-left transition-all duration-200 rounded-xl ${
+                activeSection === "billing" 
+                  ? "bg-cyan-400/20 text-cyan-400 border border-cyan-400/50" 
+                  : "bg-white/5 border border-gray-700 text-gray-300 hover:bg-gray-800/30"
+              }`}
+            >
+              <FaCreditCard className={`text-xl ${activeSection === "billing" ? "text-cyan-400" : "text-gray-400"}`} />
+              <span className="font-semibold text-xl">Payment Methods</span>
+            </button>
 
             {/* Order History Section */}
-            <div className="bg-white/5 border border-gray-700 rounded-xl overflow-hidden backdrop-blur-sm">
-              <button
-                onClick={() => setActiveSection(activeSection === "orders" ? "" : "orders")}
-                className={`w-full flex items-center justify-between px-5 py-4 text-left transition-all duration-200 ${
-                  activeSection === "orders" 
-                    ? "bg-cyan-400/10 text-cyan-400" 
-                    : "text-gray-300 hover:bg-gray-800/30"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <FaClipboardList className={`text-xl ${activeSection === "orders" ? "text-cyan-400" : "text-gray-400"}`} />
-                  <span className="font-semibold text-xl">Order History</span>
-                </div>
-                <svg 
-                  className={`w-6 h-6 transition-transform duration-300 ${
-                    activeSection === "orders" ? 'rotate-180 text-cyan-400' : 'text-gray-400'
-                  }`}
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {activeSection === "orders" && (
-                <div className="px-5 py-5 bg-cyan-400/5 border-t border-cyan-400/20 animate-in slide-in-from-top-1">
-                  <OrdersHistory />
-                </div>
-              )}
-            </div>
+            <button
+              onClick={() => setActiveSection("orders")}
+              className={`w-full flex items-center gap-3 px-5 py-4 text-left transition-all duration-200 rounded-xl ${
+                activeSection === "orders" 
+                  ? "bg-cyan-400/20 text-cyan-400 border border-cyan-400/50" 
+                  : "bg-white/5 border border-gray-700 text-gray-300 hover:bg-gray-800/30"
+              }`}
+            >
+              <FaClipboardList className={`text-xl ${activeSection === "orders" ? "text-cyan-400" : "text-gray-400"}`} />
+              <span className="font-semibold text-xl">Order History</span>
+            </button>
           </nav>
 
           {/* Mobile FAQ-Style Navigation */}
@@ -392,13 +335,7 @@ export const Account = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              {activeSection === "personal" && (
-                <div className="px-4 py-4 bg-cyan-400/5 border-t border-cyan-400/20 animate-in slide-in-from-top-1">
-                  <div className="lg:hidden">
-                    <PersonalInfo user={user} onUserUpdate={setUser} />
-                  </div>
-                </div>
-              )}
+
             </div>
 
             {/* Payment Section */}
@@ -426,13 +363,7 @@ export const Account = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              {activeSection === "billing" && (
-                <div className="px-4 py-4 bg-cyan-400/5 border-t border-cyan-400/20 animate-in slide-in-from-top-1">
-                  <div className="lg:hidden">
-                    <PaymentMethods user={user} />
-                  </div>
-                </div>
-              )}
+
             </div>
 
             {/* Orders Section */}
@@ -460,26 +391,37 @@ export const Account = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              {activeSection === "orders" && (
-                <div className="px-4 py-4 bg-cyan-400/5 border-t border-cyan-400/20 animate-in slide-in-from-top-1">
-                  <div className="lg:hidden">
-                    <OrdersHistory />
-                  </div>
-                </div>
-              )}
+
             </div>
           </div>
         </div>
-        {/* Welcome Message when no section is active */}
-        {!activeSection && (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <div className="text-6xl mb-4">👋</div>
-              <h2 className="text-2xl font-semibold text-white mb-2">Welcome to Your Account</h2>
-              <p className="text-gray-400">Select a section from the sidebar to get started</p>
+        
+        {/* Main Content Area - Unified for both mobile and desktop */}
+        <div className="flex-1 lg:block lg:bg-[#18181b]">
+          {!activeSection ? (
+            // Welcome Message when no section is active
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-6xl mb-2">👋</div>
+                <h2 className="text-2xl font-semibold text-white mb-2">Welcome to Your Account</h2>
+                <p className="text-gray-400">Select a section from the sidebar to get started</p>
+              </div>
             </div>
-          </div>
-        )}
+          ) : (
+            // Active Section Content
+            <div className="bg-[#18181b] border-gray-700 rounded-2xl p-4 md:p-8 lg:bg-transparent lg:border-0 lg:rounded-none">
+              {activeSection === "personal" && (
+                <PersonalInfo user={user} onUserUpdate={setUser} />
+              )}
+              {activeSection === "billing" && (
+                <PaymentMethods user={user} />
+              )}
+              {activeSection === "orders" && (
+                <OrdersHistory />
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Sidebar Avatar Edit Modal */}
