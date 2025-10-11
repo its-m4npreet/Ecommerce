@@ -49,3 +49,209 @@ input::placeholder {
 	}
 	transition: all 0.3s ease;
 }
+
+/* Hamburger Menu Animation */
+.hamburger-menu {
+	position: relative;
+	z-index: 1001;
+}
+
+.hamburger-icon {
+	width: 24px;
+	height: 18px;
+	position: relative;
+	transform: rotate(0deg);
+	transition: 0.5s ease-in-out;
+	cursor: pointer;
+}
+
+.hamburger-icon span {
+	display: block;
+	position: absolute;
+	height: 2px;
+	width: 100%;
+	background: #ffffff;
+	border-radius: 1px;
+	opacity: 1;
+	left: 0;
+	transform: rotate(0deg);
+	transition: 0.25s ease-in-out;
+}
+
+.hamburger-icon .line1 {
+	top: 0px;
+}
+
+.hamburger-icon .line2 {
+	top: 8px;
+}
+
+.hamburger-icon .line3 {
+	top: 16px;
+}
+
+/* Animation when menu is open */
+.hamburger-icon.open .line1 {
+	top: 8px;
+	transform: rotate(135deg);
+}
+
+.hamburger-icon.open .line2 {
+	opacity: 0;
+	left: -60px;
+}
+
+.hamburger-icon.open .line3 {
+	top: 8px;
+	transform: rotate(-135deg);
+}
+
+/* Hover effect */
+.hamburger-menu:hover .hamburger-icon span {
+	background: #22d3ee; /* cyan-400 */
+}
+
+/* Mobile menu slide animation */
+.mobile-menu-slide {
+	animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+	from {
+		opacity: 0;
+		transform: translateY(-20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Mobile menu item stagger animation */
+.mobile-menu-slide .space-y-3 > * {
+	animation: fadeInUp 0.4s ease-out;
+	animation-fill-mode: both;
+}
+
+.mobile-menu-slide .space-y-3 > *:nth-child(1) { animation-delay: 0.1s; }
+.mobile-menu-slide .space-y-3 > *:nth-child(2) { animation-delay: 0.15s; }
+.mobile-menu-slide .space-y-3 > *:nth-child(3) { animation-delay: 0.2s; }
+.mobile-menu-slide .space-y-3 > *:nth-child(4) { animation-delay: 0.25s; }
+.mobile-menu-slide .space-y-3 > *:nth-child(5) { animation-delay: 0.3s; }
+.mobile-menu-slide .space-y-3 > *:nth-child(6) { animation-delay: 0.35s; }
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Enhanced mobile menu item hover effects */
+.mobile-menu-slide a {
+	transition: all 0.2s ease-in-out;
+}
+
+.mobile-menu-slide a:hover {
+	transform: translateX(4px);
+	box-shadow: 0 2px 8px rgba(34, 211, 238, 0.2);
+}
+
+/* Enhanced Mobile Active States */
+.mobile-nav-item {
+	position: relative;
+	overflow: hidden;
+}
+
+/* Active state gradient background */
+.active-mobile-nav {
+	background: linear-gradient(135deg, #0891b2 0%, #1e40af 100%) !important;
+	border: 1px solid rgba(34, 211, 238, 0.5);
+	box-shadow: 0 4px 20px rgba(34, 211, 238, 0.4), 
+	            0 0 0 1px rgba(255, 255, 255, 0.1),
+	            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Active state shimmer effect */
+.active-mobile-nav::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: -100%;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+	animation: shimmer 3s infinite;
+	border-radius: inherit;
+}
+
+@keyframes shimmer {
+	0% { left: -100%; }
+	100% { left: 100%; }
+}
+
+/* Pulsing dot animation */
+.pulse-dot {
+	animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+	0%, 100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+	50% {
+		opacity: 0.7;
+		transform: scale(1.2);
+	}
+}
+
+/* Icon rotation and scale on active */
+.mobile-nav-item svg {
+	transition: all 0.3s ease-in-out;
+}
+
+/* Active item left border accent */
+.active-mobile-nav::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 20%;
+	height: 60%;
+	width: 4px;
+	background: rgba(255, 255, 255, 0.9);
+	border-radius: 0 3px 3px 0;
+	box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+/* Enhanced hover state for non-active items */
+.mobile-nav-item:not(.active-mobile-nav):hover {
+	background: rgba(17, 24, 39, 0.8) !important;
+	border-left: 3px solid #22d3ee;
+	padding-left: 13px;
+	transition: all 0.2s ease-in-out;
+	transform: translateX(2px);
+}
+
+/* Active state text glow */
+.active-mobile-nav span {
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+	font-weight: 600;
+	color: white !important;
+}
+
+/* Mobile active state scale effect */
+.active-mobile-nav.transform.scale-105 {
+	transform: scale(1.03) translateX(3px) !important;
+	z-index: 10;
+}
+
+/* Active state icon enhancement */
+.active-mobile-nav svg {
+	filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
+	color: white !important;
+}

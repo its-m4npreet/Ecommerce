@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 import { MdEdit, MdOutlinePassword, MdManageAccounts } from "react-icons/md";
 import { NavLink } from "react-router-dom";
+import "./account.css";
 
 export const Account = () => {
   const [activeSection, setActiveSection] = useState("personal");
@@ -210,10 +211,10 @@ export const Account = () => {
   }, []);
 
   return (
-    <div className=" bg-[#18181b] flex flex-col items-center py-10 px-4">
-      <div className="w-full max-w-6xl flex flex-col md:flex-row gap-8">
+    <div className="bg-[#18181b] flex flex-col items-center py-4 md:py-10 px-2 md:px-4 min-h-screen">
+      <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-4 md:gap-8">
         {/* Sidebar */}
-        <div className="bg-[#18181b]  border-gray-700 rounded-2xl p-8 flex flex-col items-center min-w-[300px] max-w-xs">
+        <div className="bg-[#18181b] border-gray-700 rounded-2xl p-4 md:p-8 flex flex-col items-center w-full lg:min-w-[300px] lg:max-w-xs">
           {userLoading ? (
             <div className="text-gray-400 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400 mx-auto mb-2"></div>
@@ -233,29 +234,29 @@ export const Account = () => {
                     "https://via.placeholder.com/112?text=No+Image"
                   }
                   alt="avatar"
-                  className="w-28 h-28 rounded-full object-cover border-1 border-blue-400"
+                  className="w-20 h-20 md:w-28 md:h-28 rounded-full object-cover border-1 border-blue-400"
                 />
                 <span
                   onClick={openSidebarAvatarModal}
-                  className="absolute bottom-1 right-1 bg-[#232326] hover:bg-[#2c2c2e] text-white rounded-full p-1.5 shadow-lg transition-colors z-10 cursor-pointer"
+                  className="absolute bottom-1 right-1 bg-[#232326] hover:bg-[#2c2c2e] text-white rounded-full p-1 md:p-1.5 shadow-lg transition-colors z-10 cursor-pointer"
                   title="Change Avatar"
                 >
-                  <MdEdit className="w-5 h-5" />
+                  <MdEdit className="w-4 h-4 md:w-5 md:h-5" />
                 </span>
               </div>
-              <div className="text-white text-lg font-semibold mb-1">
+              <div className="text-white text-base md:text-lg font-semibold mb-1 text-center lg:text-left">
                 {user.name || "Name not provided"}
               </div>
-              <div className="text-gray-300 text-sm flex items-center gap-2 mb-6">
-                {user.email || "Email not provided"}
+              <div className="text-gray-300 text-xs md:text-sm flex items-center justify-center lg:justify-start gap-2 mb-4 md:mb-6">
+                <span className="truncate max-w-[200px] md:max-w-none">{user.email || "Email not provided"}</span>
                 {emailCopied ? (
                   <FaCheck
-                    className="text-xs text-green-400 transition-colors"
+                    className="text-xs text-green-400 transition-colors flex-shrink-0"
                     title="Email copied!"
                   />
                 ) : (
                   <FaClipboardList
-                    className="text-xs cursor-pointer hover:text-blue-400 transition-colors"
+                    className="text-xs cursor-pointer hover:text-blue-400 transition-colors flex-shrink-0"
                     title="Copy email"
                     onClick={() => copyEmailToClipboard(user.email)}
                   />
@@ -265,60 +266,220 @@ export const Account = () => {
           ) : (
             <div className="text-gray-400">Redirecting to login...</div>
           )}
-          <nav className="flex flex-col gap-2 w-full">
-            <span
-              onClick={() => setActiveSection("personal")}
-              className={`text-left font-semibold text-[20px] transition-all duration-300 cursor-pointer px-4 py-3 rounded-lg transform hover:scale-105 ${
-                activeSection === "personal" 
-                  ? "text-blue-400 bg-blue-400/10 border-l-4 border-blue-400 shadow-lg" 
-                  : "text-white hover:text-blue-300 hover:bg-white/5 hover:shadow-md active:scale-95"
-              }`}
-            >
-              personal information
-            </span>
-            <span
-              onClick={() => setActiveSection("billing")}
-              className={`text-left font-semibold text-[20px] transition-all duration-300 cursor-pointer px-4 py-3 rounded-lg transform hover:scale-105 ${
-                activeSection === "billing" 
-                  ? "text-blue-400 bg-blue-400/10 border-l-4 border-blue-400 shadow-lg" 
-                  : "text-white hover:text-blue-300 hover:bg-white/5 hover:shadow-md active:scale-95"
-              }`}
-            >
-              billing & payment
-            </span>
-            <span
-              onClick={() => setActiveSection("orders")}
-              className={`text-left font-semibold text-[20px] transition-all duration-300 cursor-pointer px-4 py-3 rounded-lg transform hover:scale-105 ${
-                activeSection === "orders" 
-                  ? "text-blue-400 bg-blue-400/10 border-l-4 border-blue-400 shadow-lg" 
-                  : "text-white hover:text-blue-300 hover:bg-white/5 hover:shadow-md active:scale-95"
-              }`}
-            >
-              order history
-            </span>
-            {/* <span onClick={() => setActiveSection('gifts')} className={`text-left text-white font-semibold text-[20px] hover:text-blue-400 transition cursor-pointer ${activeSection === 'gifts' ? 'text-blue-400 underline' : ''}`}>gift cards</span> */}
-          </nav>
-        </div>
-        <div className="line w-0.5 h-105 bg-white"></div>
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col gap-8">
-          {userLoading ? (
-            <div className="text-gray-400">Loading...</div>
-          ) : userError ? (
-            <div className="text-red-400">{userError}</div>
-          ) : user ? (
-            <>
+          {/* Desktop FAQ-Style Navigation */}
+          <nav className="hidden lg:flex flex-col gap-3 w-full">
+            {/* Personal Info Section */}
+            <div className="bg-white/5 border border-gray-700 rounded-xl overflow-hidden backdrop-blur-sm">
+              <button
+                onClick={() => setActiveSection(activeSection === "personal" ? "" : "personal")}
+                className={`w-full flex items-center justify-between px-5 py-4 text-left transition-all duration-200 ${
+                  activeSection === "personal" 
+                    ? "bg-cyan-400/10 text-cyan-400" 
+                    : "text-gray-300 hover:bg-gray-800/30"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <FaUser className={`text-xl ${activeSection === "personal" ? "text-cyan-400" : "text-gray-400"}`} />
+                  <span className="font-semibold text-xl">Personal Info</span>
+                </div>
+                <svg 
+                  className={`w-6 h-6 transition-transform duration-300 ${
+                    activeSection === "personal" ? 'rotate-180 text-cyan-400' : 'text-gray-400'
+                  }`}
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
               {activeSection === "personal" && (
-                <PersonalInfo user={user} onUserUpdate={setUser} />
+                <div className="px-5 py-5 bg-cyan-400/5 border-t border-cyan-400/20 animate-in slide-in-from-top-1">
+                  <PersonalInfo user={user} onUserUpdate={setUser} />
+                </div>
               )}
-              {activeSection === "billing" && <PaymentMethods user={user} />}
-              {activeSection === "orders" && <OrdersHistory />}
-              {/* {activeSection === 'gifts' && <GiftCards />} */}
-            </>
-          ) : (
-            <div className="text-gray-400">Redirecting to login...</div>
-          )}
+            </div>
+
+            {/* Payment Methods Section */}
+            <div className="bg-white/5 border border-gray-700 rounded-xl overflow-hidden backdrop-blur-sm">
+              <button
+                onClick={() => setActiveSection(activeSection === "billing" ? "" : "billing")}
+                className={`w-full flex items-center justify-between px-5 py-4 text-left transition-all duration-200 ${
+                  activeSection === "billing" 
+                    ? "bg-cyan-400/10 text-cyan-400" 
+                    : "text-gray-300 hover:bg-gray-800/30"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <FaCreditCard className={`text-xl ${activeSection === "billing" ? "text-cyan-400" : "text-gray-400"}`} />
+                  <span className="font-semibold text-xl">Payment Methods</span>
+                </div>
+                <svg 
+                  className={`w-6 h-6 transition-transform duration-300 ${
+                    activeSection === "billing" ? 'rotate-180 text-cyan-400' : 'text-gray-400'
+                  }`}
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {activeSection === "billing" && (
+                <div className="px-5 py-5 bg-cyan-400/5 border-t border-cyan-400/20 animate-in slide-in-from-top-1">
+                  <PaymentMethods user={user} />
+                </div>
+              )}
+            </div>
+
+            {/* Order History Section */}
+            <div className="bg-white/5 border border-gray-700 rounded-xl overflow-hidden backdrop-blur-sm">
+              <button
+                onClick={() => setActiveSection(activeSection === "orders" ? "" : "orders")}
+                className={`w-full flex items-center justify-between px-5 py-4 text-left transition-all duration-200 ${
+                  activeSection === "orders" 
+                    ? "bg-cyan-400/10 text-cyan-400" 
+                    : "text-gray-300 hover:bg-gray-800/30"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <FaClipboardList className={`text-xl ${activeSection === "orders" ? "text-cyan-400" : "text-gray-400"}`} />
+                  <span className="font-semibold text-xl">Order History</span>
+                </div>
+                <svg 
+                  className={`w-6 h-6 transition-transform duration-300 ${
+                    activeSection === "orders" ? 'rotate-180 text-cyan-400' : 'text-gray-400'
+                  }`}
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {activeSection === "orders" && (
+                <div className="px-5 py-5 bg-cyan-400/5 border-t border-cyan-400/20 animate-in slide-in-from-top-1">
+                  <OrdersHistory />
+                </div>
+              )}
+            </div>
+          </nav>
+
+          {/* Mobile FAQ-Style Navigation */}
+          <div className="lg:hidden w-full space-y-2">
+            {/* Personal Info Section */}
+            <div className="bg-white/5 border border-gray-700 rounded-xl overflow-hidden backdrop-blur-sm">
+              <button
+                onClick={() => setActiveSection(activeSection === "personal" ? "" : "personal")}
+                className={`w-full flex items-center justify-between px-4 py-4 text-left transition-all duration-200 ${
+                  activeSection === "personal" 
+                    ? "bg-cyan-400/10 text-cyan-400" 
+                    : "text-gray-300 hover:bg-gray-800/30"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <FaUser className={`text-lg ${activeSection === "personal" ? "text-cyan-400" : "text-gray-400"}`} />
+                  <span className="font-medium">Personal Info</span>
+                </div>
+                <svg 
+                  className={`w-5 h-5 transition-transform duration-300 ${
+                    activeSection === "personal" ? 'rotate-180 text-cyan-400' : 'text-gray-400'
+                  }`}
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {activeSection === "personal" && (
+                <div className="px-4 py-4 bg-cyan-400/5 border-t border-cyan-400/20 animate-in slide-in-from-top-1">
+                  <div className="lg:hidden">
+                    <PersonalInfo user={user} onUserUpdate={setUser} />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Payment Section */}
+            <div className="bg-white/5 border border-gray-700 rounded-xl overflow-hidden backdrop-blur-sm">
+              <button
+                onClick={() => setActiveSection(activeSection === "billing" ? "" : "billing")}
+                className={`w-full flex items-center justify-between px-4 py-4 text-left transition-all duration-200 ${
+                  activeSection === "billing" 
+                    ? "bg-cyan-400/10 text-cyan-400" 
+                    : "text-gray-300 hover:bg-gray-800/30"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <FaCreditCard className={`text-lg ${activeSection === "billing" ? "text-cyan-400" : "text-gray-400"}`} />
+                  <span className="font-medium">Payment Methods</span>
+                </div>
+                <svg 
+                  className={`w-5 h-5 transition-transform duration-300 ${
+                    activeSection === "billing" ? 'rotate-180 text-cyan-400' : 'text-gray-400'
+                  }`}
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {activeSection === "billing" && (
+                <div className="px-4 py-4 bg-cyan-400/5 border-t border-cyan-400/20 animate-in slide-in-from-top-1">
+                  <div className="lg:hidden">
+                    <PaymentMethods user={user} />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Orders Section */}
+            <div className="bg-white/5 border border-gray-700 rounded-xl overflow-hidden backdrop-blur-sm">
+              <button
+                onClick={() => setActiveSection(activeSection === "orders" ? "" : "orders")}
+                className={`w-full flex items-center justify-between px-4 py-4 text-left transition-all duration-200 ${
+                  activeSection === "orders" 
+                    ? "bg-cyan-400/10 text-cyan-400" 
+                    : "text-gray-300 hover:bg-gray-800/30"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <FaClipboardList className={`text-lg ${activeSection === "orders" ? "text-cyan-400" : "text-gray-400"}`} />
+                  <span className="font-medium">Order History</span>
+                </div>
+                <svg 
+                  className={`w-5 h-5 transition-transform duration-300 ${
+                    activeSection === "orders" ? 'rotate-180 text-cyan-400' : 'text-gray-400'
+                  }`}
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {activeSection === "orders" && (
+                <div className="px-4 py-4 bg-cyan-400/5 border-t border-cyan-400/20 animate-in slide-in-from-top-1">
+                  <div className="lg:hidden">
+                    <OrdersHistory />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
+        {/* Welcome Message when no section is active */}
+        {!activeSection && (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <div className="text-6xl mb-4">👋</div>
+              <h2 className="text-2xl font-semibold text-white mb-2">Welcome to Your Account</h2>
+              <p className="text-gray-400">Select a section from the sidebar to get started</p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Sidebar Avatar Edit Modal */}
@@ -419,15 +580,15 @@ const PersonalInfo = ({ user, onUserUpdate }) => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold text-white">
-          Personal information
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
+        <h2 className="text-xl md:text-2xl font-semibold text-white">
+          Personal Information
         </h2>
         {hasChanges && (
           <button
             onClick={saveToBackend}
             disabled={isSaving}
-            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 md:px-6 py-2 rounded-lg font-medium transition-colors text-sm md:text-base ${
               isSaving
                 ? "bg-gray-600 text-gray-400 cursor-not-allowed"
                 : "bg-blue-600 text-white hover:bg-blue-700"
@@ -437,7 +598,7 @@ const PersonalInfo = ({ user, onUserUpdate }) => {
           </button>
         )}
       </div>
-      <p className="text-gray-400 mb-8">
+      <p className="text-gray-400 mb-6 md:mb-8 text-sm md:text-base">
         Manage your personal information, including phone numbers and email
         address where you can be connected
       </p>
@@ -460,9 +621,9 @@ const PersonalInfo = ({ user, onUserUpdate }) => {
 				</div>
 			</div> */}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Name */}
-        <div className="relative min-h-[130px] bg-[#232326] rounded-xl p-6 flex flex-col gap-2 shadow border border-gray-700 transition-all duration-300 hover:shadow-xl hover:border-gray-600 hover:bg-[#2a2a2d] group cursor-pointer">
+        <div className="relative min-h-[110px] md:min-h-[130px] bg-[#232326] rounded-xl p-4 md:p-6 flex flex-col gap-2 shadow border border-gray-700 transition-all duration-300 hover:shadow-xl hover:border-gray-600 hover:bg-[#2a2a2d] group cursor-pointer">
           <div
             className="absolute top-2 right-2 text-gray-400 rounded-full p-2 transition-all duration-200 hover:bg-blue-600/20 hover:text-blue-400 hover:scale-110 active:scale-95 group-hover:opacity-100 opacity-70"
             title="Edit Name"
@@ -470,22 +631,22 @@ const PersonalInfo = ({ user, onUserUpdate }) => {
           >
             <MdEdit />
           </div>
-          <div className="flex items-center gap-2 text-gray-400 text-sm mb-1 transition-colors group-hover:text-gray-300">
+          <div className="flex items-center gap-2 text-gray-400 text-xs md:text-sm mb-1 transition-colors group-hover:text-gray-300">
             <FaUser />
             Name
           </div>
-          <div className="text-white text-lg font-semibold group-hover:text-blue-100 transition-colors">
+          <div className="text-white text-base md:text-lg font-semibold group-hover:text-blue-100 transition-colors break-words">
             {userData.name || "Name not provided"}
           </div>
         </div>
 
         {/* Email (Read-only) */}
-        <div className="relative min-h-[130px] bg-[#232326] rounded-xl p-6 flex flex-col gap-2 shadow border border-gray-700 transition-all duration-300 hover:shadow-lg hover:border-gray-600 hover:bg-[#2a2a2d] group">
-          <div className="flex items-center gap-2 text-gray-400 text-sm mb-1 transition-colors group-hover:text-gray-300">
+        <div className="relative min-h-[110px] md:min-h-[130px] bg-[#232326] rounded-xl p-4 md:p-6 flex flex-col gap-2 shadow border border-gray-700 transition-all duration-300 hover:shadow-lg hover:border-gray-600 hover:bg-[#2a2a2d] group">
+          <div className="flex items-center gap-2 text-gray-400 text-xs md:text-sm mb-1 transition-colors group-hover:text-gray-300">
             <FaEnvelope />
             Email
           </div>
-          <div className="text-white text-lg font-semibold group-hover:text-blue-100 transition-colors">
+          <div className="text-white text-base md:text-lg font-semibold group-hover:text-blue-100 transition-colors break-all">
             {userData.email || "Email not provided"}
           </div>
           <div className="text-xs text-gray-500 mt-auto group-hover:text-gray-400 transition-colors">
@@ -494,9 +655,9 @@ const PersonalInfo = ({ user, onUserUpdate }) => {
         </div>
 
         {/* Address */}
-        <div className="relative min-h-[130px] bg-[#232326] rounded-xl p-6 flex flex-col gap-2 shadow border border-gray-700 transition-all duration-300 hover:shadow-xl hover:border-gray-600 hover:bg-[#2a2a2d] group cursor-pointer">
+        <div className="relative min-h-[110px] md:min-h-[130px] bg-[#232326] rounded-xl p-4 md:p-6 flex flex-col gap-2 shadow border border-gray-700 transition-all duration-300 hover:shadow-xl hover:border-gray-600 hover:bg-[#2a2a2d] group cursor-pointer">
           <div
-            className="absolute top-2 right-2 text-gray-400 rounded-full p-2 transition-all duration-200 hover:bg-blue-600/20 hover:text-blue-400 hover:scale-110 active:scale-95 group-hover:opacity-100 opacity-70"
+            className="absolute top-2 right-2 text-gray-400 rounded-full p-1.5 md:p-2 transition-all duration-200 hover:bg-blue-600/20 hover:text-blue-400 hover:scale-110 active:scale-95 group-hover:opacity-100 opacity-70"
             title="Edit Address"
             onClick={() => openEditModal("address", 
               userData.addresses && userData.addresses.length > 0 
@@ -504,13 +665,13 @@ const PersonalInfo = ({ user, onUserUpdate }) => {
                 : userData.address || ""
             )}
           >
-            <MdEdit />
+            <MdEdit className="w-4 h-4 md:w-5 md:h-5" />
           </div>
-          <div className="flex items-center gap-2 text-gray-400 text-sm mb-1 transition-colors group-hover:text-gray-300">
+          <div className="flex items-center gap-2 text-gray-400 text-xs md:text-sm mb-1 transition-colors group-hover:text-gray-300">
             <FaMapMarkerAlt />
             Address
           </div>
-          <div className="text-white text-lg font-semibold group-hover:text-blue-100 transition-colors">
+          <div className="text-white text-base md:text-lg font-semibold group-hover:text-blue-100 transition-colors break-words line-clamp-2">
             {userData.addresses && userData.addresses.length > 0 
               ? userData.addresses[0].address 
               : userData.address || "Address not provided"}
@@ -523,54 +684,54 @@ const PersonalInfo = ({ user, onUserUpdate }) => {
         </div>
 
         {/* Phone Number */}
-        <div className="relative min-h-[130px] bg-[#232326] rounded-xl p-6 flex flex-col gap-2 shadow border border-gray-700 transition-all duration-300 hover:shadow-xl hover:border-gray-600 hover:bg-[#2a2a2d] group cursor-pointer">
+        <div className="relative min-h-[110px] md:min-h-[130px] bg-[#232326] rounded-xl p-4 md:p-6 flex flex-col gap-2 shadow border border-gray-700 transition-all duration-300 hover:shadow-xl hover:border-gray-600 hover:bg-[#2a2a2d] group cursor-pointer">
           <div
-            className="absolute top-2 right-2 text-gray-400 rounded-full p-2 transition-all duration-200 hover:bg-blue-600/20 hover:text-blue-400 hover:scale-110 active:scale-95 group-hover:opacity-100 opacity-70"
+            className="absolute top-2 right-2 text-gray-400 rounded-full p-1.5 md:p-2 transition-all duration-200 hover:bg-blue-600/20 hover:text-blue-400 hover:scale-110 active:scale-95 group-hover:opacity-100 opacity-70"
             title="Edit Phone"
             onClick={() =>
               openEditModal("phoneNumber", userData.phoneNumber || "")
             }
           >
-            <MdEdit />
+            <MdEdit className="w-4 h-4 md:w-5 md:h-5" />
           </div>
-          <div className="flex items-center gap-2 text-gray-400 text-sm mb-1 transition-colors group-hover:text-gray-300">
+          <div className="flex items-center gap-2 text-gray-400 text-xs md:text-sm mb-1 transition-colors group-hover:text-gray-300">
             📱 Phone
           </div>
-          <div className="text-white text-lg font-semibold group-hover:text-blue-100 transition-colors">
+          <div className="text-white text-base md:text-lg font-semibold group-hover:text-blue-100 transition-colors break-words">
             {userData.phoneNumber || "Phone not provided"}
           </div>
         </div>
 
         {/* Password */}
-        <div className="relative min-h-[130px] bg-[#232326] rounded-xl p-6 flex flex-col gap-2 shadow border border-gray-700 transition-all duration-300 hover:shadow-xl hover:border-gray-600 hover:bg-[#2a2a2d] group cursor-pointer">
+        <div className="relative min-h-[110px] md:min-h-[130px] bg-[#232326] rounded-xl p-4 md:p-6 flex flex-col gap-2 shadow border border-gray-700 transition-all duration-300 hover:shadow-xl hover:border-gray-600 hover:bg-[#2a2a2d] group cursor-pointer">
           <div
-            className="absolute top-2 right-2 text-gray-400 rounded-full p-2 transition-all duration-200 hover:bg-yellow-600/20 hover:text-yellow-400 hover:scale-110 active:scale-95 group-hover:opacity-100 opacity-70"
+            className="absolute top-2 right-2 text-gray-400 rounded-full p-1.5 md:p-2 transition-all duration-200 hover:bg-yellow-600/20 hover:text-yellow-400 hover:scale-110 active:scale-95 group-hover:opacity-100 opacity-70"
             title="Change Password"
             onClick={() => openEditModal("password", "")}
           >
-            <MdEdit />
+            <MdEdit className="w-4 h-4 md:w-5 md:h-5" />
           </div>
-          <div className="flex items-center gap-2 text-gray-400 text-sm mb-1 transition-colors group-hover:text-gray-300">
+          <div className="flex items-center gap-2 text-gray-400 text-xs md:text-sm mb-1 transition-colors group-hover:text-gray-300">
             <MdOutlinePassword />
             Password
           </div>
-          <div className="text-white text-lg font-semibold group-hover:text-blue-100 transition-colors">••••••••</div>
+          <div className="text-white text-base md:text-lg font-semibold group-hover:text-blue-100 transition-colors">••••••••</div>
         </div>
 
         {/* Sign Out */}
-        <div className="relative min-h-[130px] bg-[#232326] rounded-xl p-6 flex flex-col gap-2 shadow border border-gray-700 transition-all duration-300 hover:shadow-xl hover:border-red-600/50 hover:bg-red-900/10 group cursor-pointer">
+        <div className="relative min-h-[110px] md:min-h-[130px] bg-[#232326] rounded-xl p-4 md:p-6 flex flex-col gap-2 shadow border border-gray-700 transition-all duration-300 hover:shadow-xl hover:border-red-600/50 hover:bg-red-900/10 group cursor-pointer">
           <div
-            className="absolute top-2 right-2 text-gray-400 rounded-full p-2 shadow transition-all duration-200 hover:bg-red-600/20 hover:text-red-400 hover:scale-110 active:scale-95 group-hover:opacity-100 opacity-70"
+            className="absolute top-2 right-2 text-gray-400 rounded-full p-1.5 md:p-2 shadow transition-all duration-200 hover:bg-red-600/20 hover:text-red-400 hover:scale-110 active:scale-95 group-hover:opacity-100 opacity-70"
             title="Sign Out"
             onClick={() => openEditModal("signout", "")}
           >
-            <FaSignOutAlt />
+            <FaSignOutAlt className="w-4 h-4 md:w-5 md:h-5" />
           </div>
-          <div className="flex items-center gap-2 text-gray-400 text-sm mb-1 transition-colors group-hover:text-red-300">
+          <div className="flex items-center gap-2 text-gray-400 text-xs md:text-sm mb-1 transition-colors group-hover:text-red-300">
             <FaSignOutAlt />
             Sign Out
           </div>
-          <div className="text-white text-lg font-semibold group-hover:text-red-200 transition-colors">
+          <div className="text-white text-base md:text-lg font-semibold group-hover:text-red-200 transition-colors">
             logout from account
           </div>
         </div>
@@ -699,13 +860,13 @@ const PaymentMethods = ({ user }) => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold text-white">Payment Methods</h2>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
+        <h2 className="text-xl md:text-2xl font-semibold text-white">Payment Methods</h2>
         {hasChanges && (
           <button
             onClick={saveToBackend}
             disabled={isSaving}
-            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 md:px-6 py-2 rounded-lg font-medium transition-colors text-sm md:text-base ${
               isSaving
                 ? "bg-gray-600 text-gray-400 cursor-not-allowed"
                 : "bg-blue-600 text-white hover:bg-blue-700"
@@ -715,43 +876,43 @@ const PaymentMethods = ({ user }) => {
           </button>
         )}
       </div>
-      <p className="text-gray-400 mb-8">
+      <p className="text-gray-400 mb-6 md:mb-8 text-sm md:text-base">
         Manage your payment methods for secure transactions
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         {/* Credit Card - Main Card */}
-        <div className="relative min-h-[200px] bg-[#232326] rounded-xl p-6 flex flex-col justify-between shadow-lg border border-gray-600 cursor-pointer transition-all duration-300 hover:bg-gradient-to-br hover:from-[#2a2a2d] hover:to-[#232326] hover:shadow-2xl hover:border-blue-400/50 hover:scale-105 group transform">
+        <div className="relative min-h-[180px] md:min-h-[200px] bg-[#232326] rounded-xl p-4 md:p-6 flex flex-col justify-between shadow-lg border border-gray-600 cursor-pointer transition-all duration-300 hover:bg-gradient-to-br hover:from-[#2a2a2d] hover:to-[#232326] hover:shadow-2xl hover:border-blue-400/50 hover:scale-105 group transform">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2 text-gray-400 text-sm mb-1 transition-colors group-hover:text-gray-300">
-              <FaCreditCard className="text-xl text-blue-400 transition-all group-hover:text-blue-300 group-hover:scale-110" />
+            <div className="flex items-center gap-2 text-gray-400 text-xs md:text-sm mb-1 transition-colors group-hover:text-gray-300">
+              <FaCreditCard className="text-lg md:text-xl text-blue-400 transition-all group-hover:text-blue-300 group-hover:scale-110" />
               <span className="font-medium text-white group-hover:text-blue-100 transition-colors">Credit Card</span>
             </div>
-            <div className="text-gray-400 transition-all duration-200 hover:bg-blue-600/20 hover:text-blue-400 p-2 rounded-full hover:scale-110 active:scale-95">
+            <div className="text-gray-400 transition-all duration-200 hover:bg-blue-600/20 hover:text-blue-400 p-1.5 md:p-2 rounded-full hover:scale-110 active:scale-95">
               <MdEdit
-                className="text-xl"
+                className="text-lg md:text-xl"
                 onClick={() => openEditModal("creditCardForm", null)}
               />
             </div>
           </div>
 
           <div className="mb-4">
-            <div className="text-white text-xl font-mono tracking-wider mb-3 group-hover:text-blue-100 transition-colors">
+            <div className="text-white text-lg md:text-xl font-mono tracking-wider mb-3 group-hover:text-blue-100 transition-colors break-all">
               {maskCreditCard(paymentData.creditCard)}
             </div>
-            <div className="flex justify-between items-end">
-              <div>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2 sm:gap-0">
+              <div className="flex-1">
                 <div className="text-gray-400 text-xs uppercase tracking-wide mb-1 group-hover:text-gray-300 transition-colors">
                   Card Holder
                 </div>
-                <div className="text-white text-sm font-medium group-hover:text-blue-100 transition-colors">
+                <div className="text-white text-xs md:text-sm font-medium group-hover:text-blue-100 transition-colors break-words">
                   {paymentData.cardHolderName || "ADD CARD DETAILS"}
                 </div>
               </div>
-              <div>
+              <div className="flex-shrink-0">
                 <div className="text-gray-400 text-xs uppercase tracking-wide mb-1 group-hover:text-gray-300 transition-colors">
                   Expires
                 </div>
-                <div className="text-white text-sm font-medium group-hover:text-blue-100 transition-colors">
+                <div className="text-white text-xs md:text-sm font-medium group-hover:text-blue-100 transition-colors">
                   {paymentData.expiryDate || "MM/YY"}
                 </div>
               </div>
@@ -766,25 +927,25 @@ const PaymentMethods = ({ user }) => {
         </div>
 
         {/* UPI ID Card */}
-        <div className="relative min-h-[200px] bg-[#232326] rounded-xl p-6 flex flex-col justify-between shadow-lg border border-gray-600 cursor-pointer transition-all duration-300 hover:bg-gradient-to-br hover:from-[#2a2a2d] hover:to-[#232326] hover:shadow-2xl hover:border-green-400/50 hover:scale-105 group transform">
+        <div className="relative min-h-[180px] md:min-h-[200px] bg-[#232326] rounded-xl p-4 md:p-6 flex flex-col justify-between shadow-lg border border-gray-600 cursor-pointer transition-all duration-300 hover:bg-gradient-to-br hover:from-[#2a2a2d] hover:to-[#232326] hover:shadow-2xl hover:border-green-400/50 hover:scale-105 group transform">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2 text-gray-400 text-sm mb-1 transition-colors group-hover:text-gray-300">
-              <FaPaypal className="text-xl text-green-400 transition-all group-hover:text-green-300 group-hover:scale-110" />
+            <div className="flex items-center gap-2 text-gray-400 text-xs md:text-sm mb-1 transition-colors group-hover:text-gray-300">
+              <FaPaypal className="text-lg md:text-xl text-green-400 transition-all group-hover:text-green-300 group-hover:scale-110" />
               <span className="font-medium text-white group-hover:text-green-100 transition-colors">UPI Payment</span>
             </div>
-            <div className="text-gray-400 transition-all duration-200 hover:bg-green-600/20 hover:text-green-400 p-2 rounded-full hover:scale-110 active:scale-95">
+            <div className="text-gray-400 transition-all duration-200 hover:bg-green-600/20 hover:text-green-400 p-1.5 md:p-2 rounded-full hover:scale-110 active:scale-95">
               <MdEdit
-                className="text-xl"
+                className="text-lg md:text-xl"
                 onClick={() => openEditModal("upiId", paymentData.upiId)}
               />
             </div>
           </div>
 
           <div className="mb-4">
-            <div className="text-white text-xl font-mono tracking-wider mb-3 group-hover:text-green-100 transition-colors">
+            <div className="text-white text-lg md:text-xl font-mono tracking-wider mb-3 group-hover:text-green-100 transition-colors break-all">
               {paymentData.upiId || "user@upi"}
             </div>
-            <div className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">
+            <div className="text-gray-400 text-xs md:text-sm group-hover:text-gray-300 transition-colors">
               {paymentData.upiId ? "UPI ID configured" : "Set up UPI payment"}
             </div>
           </div>
@@ -838,6 +999,11 @@ const OrdersHistory = () => {
       })
       .then((data) => {
         console.log("Orders fetched from backend:", data);
+        // Debug: Log product data structure to understand image paths
+        if (data.length > 0 && data[0].products?.length > 0) {
+          console.log("Sample product data:", data[0].products[0]);
+          console.log("Product image path:", data[0].products[0].product?.image);
+        }
         setOrders(data);
         setLoading(false);
       })
@@ -901,10 +1067,10 @@ const OrdersHistory = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold text-white mb-4">Order History</h2>
-      {loading && <div className="text-gray-400">Loading orders...</div>}
-      {error && <div className="text-red-400">{error}</div>}
-      <div className="flex flex-col gap-6">
+      <h2 className="text-xl md:text-2xl font-semibold text-white mb-4">Order History</h2>
+      {loading && <div className="text-gray-400 text-sm md:text-base">Loading orders...</div>}
+      {error && <div className="text-red-400 text-sm md:text-base">{error}</div>}
+      <div className="flex flex-col gap-4 md:gap-6">
         {orders.length === 0 && !loading && !error && (
           <div className="flex flex-col items-center justify-center py-16 px-6">
             <div className="text-6xl mb-6">🛒</div>
@@ -926,21 +1092,21 @@ const OrdersHistory = () => {
         {orders.map((order) => (
           <div
             key={order._id}
-            className="bg-[#232326] rounded-xl p-6 shadow border border-gray-700 transition-all duration-300 hover:shadow-2xl hover:border-gray-600 hover:bg-[#2a2a2d] hover:scale-[1.02] transform group"
+            className="bg-[#232326] rounded-xl p-4 md:p-6 shadow border border-gray-700 transition-all duration-300 hover:shadow-2xl hover:border-gray-600 hover:bg-[#2a2a2d] hover:scale-[1.02] transform group"
           >
             {/* Order Header */}
-            <div className="flex justify-between items-start mb-4 pb-3 border-b border-gray-600 group-hover:border-gray-500 transition-colors">
-              <div>
-                <div className="text-white font-semibold text-lg mb-1 group-hover:text-blue-100 transition-colors">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-4 pb-3 border-b border-gray-600 group-hover:border-gray-500 transition-colors">
+              <div className="flex-1">
+                <div className="text-white font-semibold text-base md:text-lg mb-1 group-hover:text-blue-100 transition-colors">
                   Order #{order._id.slice(-8)}
                 </div>
-                <div className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">
+                <div className="text-gray-400 text-xs md:text-sm group-hover:text-gray-300 transition-colors">
                   Order Date:{" "}
                   {new Date(
                     order.createdAt || order.orderDate
                   ).toLocaleDateString()}
                 </div>
-                <div className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">
+                <div className="text-gray-400 text-xs md:text-sm group-hover:text-gray-300 transition-colors">
                   Status:{" "}
                   <span
                     className={`font-bold capitalize ${getStatusColor(
@@ -951,74 +1117,102 @@ const OrdersHistory = () => {
                   </span>
                 </div>
               </div>
-              <div className="flex flex-col items-end gap-2">
-                <div className="text-gray-200 text-xl font-bold group-hover:text-green-300 transition-colors">
-                  ₹{order.total?.toLocaleString()}
-                </div>
-                <div className="text-gray-500 text-sm group-hover:text-gray-400 transition-colors">
-                  {order.products.length} item
-                  {order.products.length > 1 ? "s" : ""}
+              <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2">
+                <div>
+                  <div className="text-gray-200 text-lg md:text-xl font-bold group-hover:text-green-300 transition-colors">
+                    ₹{order.total?.toLocaleString()}
+                  </div>
+                  <div className="text-gray-500 text-xs md:text-sm group-hover:text-gray-400 transition-colors text-center sm:text-right">
+                    {order.products.length} item
+                    {order.products.length > 1 ? "s" : ""}
+                  </div>
                 </div>
 
                 {/* Cancel Button */}
-                {canCancelOrder(order.status) && (
-                  <button
-                    onClick={() => handleCancelOrder(order._id)}
-                    disabled={cancellingOrder === order._id}
-                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 transform ${
-                      cancellingOrder === order._id
-                        ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                        : "bg-red-600 text-white hover:bg-red-700 hover:scale-105 hover:shadow-lg active:scale-95"
-                    }`}
-                  >
-                    {cancellingOrder === order._id
-                      ? "Cancelling..."
-                      : "Cancel Order"}
-                  </button>
-                )}
+                <div className="flex flex-col gap-2">
+                  {canCancelOrder(order.status) && (
+                    <button
+                      onClick={() => handleCancelOrder(order._id)}
+                      disabled={cancellingOrder === order._id}
+                      className={`px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-lg transition-all duration-200 transform whitespace-nowrap ${
+                        cancellingOrder === order._id
+                          ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                          : "bg-red-600 text-white hover:bg-red-700 hover:scale-105 hover:shadow-lg active:scale-95"
+                      }`}
+                    >
+                      {cancellingOrder === order._id
+                        ? "Cancelling..."
+                        : "Cancel"}
+                    </button>
+                  )}
 
-                {order.status.toLowerCase() === "cancelled" && (
-                  <span className="px-4 py-2 text-sm font-medium text-red-400 bg-red-900/20 rounded-lg">
-                    Order Cancelled
-                  </span>
-                )}
+                  {order.status.toLowerCase() === "cancelled" && (
+                    <span className="px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-red-400 bg-red-900/20 rounded-lg text-center">
+                      Cancelled
+                    </span>
+                  )}
 
-                {["shipped", "delivered"].includes(
-                  order.status.toLowerCase()
-                ) && (
-                  <span className="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-700 rounded-lg">
-                    Cannot Cancel
-                  </span>
-                )}
+                  {["shipped", "delivered"].includes(
+                    order.status.toLowerCase()
+                  ) && (
+                    <span className="px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-gray-400 bg-gray-700 rounded-lg text-center">
+                      Cannot Cancel
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* All Products in Order */}
-            <div className="space-y-3">
+            <div className="space-y-2 md:space-y-3">
               {order.products.map((item, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-4 p-3 bg-[#1a1a1d] rounded-lg transition-all duration-200 hover:bg-[#222225] hover:scale-[1.01] transform hover:shadow-md"
+                  className="flex items-center gap-3 md:gap-4 p-2 md:p-3 bg-[#1a1a1d] rounded-lg transition-all duration-200 hover:bg-[#222225] hover:scale-[1.01] transform hover:shadow-md"
                 >
-                  <img
-                    src={
-                      item.product?.image || "https://via.placeholder.com/60"
-                    }
-                    alt={item.product?.title || "Product"}
-                    className="w-16 h-16 object-cover rounded-lg border border-gray-800"
-                  />
-                  <div className="flex-1">
-                    <div className="text-white font-medium text-base mb-1">
+                  <div className="w-14 h-14 md:w-16 md:h-16 flex-shrink-0 bg-gray-700 rounded-lg border border-gray-600 overflow-hidden shadow-sm">
+                    <img
+                      src={
+                        // Try multiple image source formats
+                        item.product?.image || 
+                        item.product?.images?.[0] || 
+                        item.image ||
+                        (item.product?.image && !item.product.image.startsWith('http') 
+                          ? `http://localhost:8080${item.product.image.startsWith('/') ? item.product.image : '/' + item.product.image}` 
+                          : item.product?.image
+                        ) ||
+                        "https://via.placeholder.com/60?text=No+Image"
+                      }
+                      alt={item.product?.title || "Product"}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        console.log("Image load failed for:", item.product?.title, "- URL:", e.target.src);
+                        // Try different fallbacks
+                        if (e.target.src.includes('localhost:8080')) {
+                          e.target.src = item.product?.image || "https://via.placeholder.com/60?text=No+Image";
+                        } else if (!e.target.src.includes('placeholder')) {
+                          e.target.src = "https://via.placeholder.com/60?text=No+Image";
+                        }
+                      }}
+                      onLoad={() => {
+                        console.log("Image loaded successfully for:", item.product?.title);
+                      }}
+                      loading="lazy"
+                      crossOrigin="anonymous"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-white font-medium text-sm md:text-base mb-1 truncate">
                       {item.product?.title || "Product"}
                     </div>
-                    <div className="text-gray-400 text-sm mb-1">
+                    <div className="text-gray-400 text-xs md:text-sm mb-1">
                       Category: {item.product?.category || "N/A"}
                     </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-gray-400 text-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                      <span className="text-gray-400 text-xs md:text-sm">
                         Qty: {item.quantity}
                       </span>
-                      <span className="text-gray-200 font-semibold">
+                      <span className="text-gray-200 font-semibold text-sm md:text-base">
                         ₹{item.price?.toLocaleString()}
                       </span>
                     </div>
@@ -1210,9 +1404,9 @@ const EditModal = ({ type, currentData, onSave, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[#232326] rounded-xl p-6 w-full max-w-md mx-4 border border-gray-700">
-        <h3 className="text-xl font-semibold text-white mb-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-[#232326] rounded-xl p-4 md:p-6 w-full max-w-md border border-gray-700 max-h-[90vh] overflow-y-auto">
+        <h3 className="text-lg md:text-xl font-semibold text-white mb-4">
           {getModalTitle()}
         </h3>
 
@@ -1603,17 +1797,17 @@ const PaymentEditModal = ({
 
         <form onSubmit={handleSubmit}>
           {type === "creditCardForm" ? (
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {/* Card Number */}
               <div>
-                <label className="block text-gray-400 text-sm mb-2">
+                <label className="block text-gray-400 text-xs md:text-sm mb-1 md:mb-2">
                   Card Number
                 </label>
                 <input
                   type="text"
                   value={formData.creditCard}
                   onChange={handleCardNumberChange}
-                  className="w-full p-3 bg-[#1a1a1d] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-400 font-mono text-lg tracking-wider"
+                  className="w-full p-2 md:p-3 bg-[#1a1a1d] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-400 font-mono text-sm md:text-lg tracking-wider"
                   placeholder="1234 5678 9012 3456"
                   maxLength={19}
                 />
@@ -1624,7 +1818,7 @@ const PaymentEditModal = ({
 
               {/* Card Holder Name */}
               <div>
-                <label className="block text-gray-400 text-sm mb-2">
+                <label className="block text-gray-400 text-xs md:text-sm mb-1 md:mb-2">
                   Card Holder Name
                 </label>
                 <input
@@ -1636,28 +1830,28 @@ const PaymentEditModal = ({
                       cardHolderName: e.target.value.toUpperCase(),
                     }))
                   }
-                  className="w-full p-3 bg-[#1a1a1d] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-400"
+                  className="w-full p-2 md:p-3 bg-[#1a1a1d] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-400 text-sm md:text-base"
                   placeholder="JOHN DOE"
                 />
               </div>
 
               {/* Expiry Date and CVV */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-2 md:gap-4">
                 <div>
-                  <label className="block text-gray-400 text-sm mb-2">
+                  <label className="block text-gray-400 text-xs md:text-sm mb-1 md:mb-2">
                     Expiry Date
                   </label>
                   <input
                     type="text"
                     value={formData.expiryDate}
                     onChange={handleExpiryChange}
-                    className="w-full p-3 bg-[#1a1a1d] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-400 font-mono"
+                    className="w-full p-2 md:p-3 bg-[#1a1a1d] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-400 font-mono text-sm md:text-base"
                     placeholder="MM/YY"
                     maxLength={5}
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-400 text-sm mb-2">
+                  <label className="block text-gray-400 text-xs md:text-sm mb-1 md:mb-2">
                     CVV
                   </label>
                   <input
@@ -1669,15 +1863,15 @@ const PaymentEditModal = ({
                         cvv: e.target.value.replace(/\D/g, ""),
                       }))
                     }
-                    className="w-full p-3 bg-[#1a1a1d] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-400 font-mono"
+                    className="w-full p-2 md:p-3 bg-[#1a1a1d] border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-400 font-mono text-sm md:text-base"
                     placeholder="123"
                     maxLength={4}
                   />
                 </div>
               </div>
 
-              <div className="bg-[#1a1a1d] p-4 rounded-lg">
-                <div className="flex items-center gap-2 text-yellow-400 text-sm mb-2">
+              <div className="bg-[#1a1a1d] p-3 md:p-4 rounded-lg">
+                <div className="flex items-center gap-2 text-yellow-400 text-xs md:text-sm mb-2">
                   🔒 Security Notice
                 </div>
                 <div className="text-xs text-gray-400 space-y-1">
@@ -1709,17 +1903,17 @@ const PaymentEditModal = ({
             </div>
           )}
 
-          <div className="flex gap-3 mt-6">
+          <div className="flex gap-2 md:gap-3 mt-4 md:mt-6">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              className="flex-1 px-3 md:px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm md:text-base"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex-1 px-3 md:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm md:text-base"
             >
               {type === "creditCardForm" ? "Save Card" : "Save"}
             </button>
