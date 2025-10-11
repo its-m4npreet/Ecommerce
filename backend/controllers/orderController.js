@@ -110,3 +110,33 @@ exports.getAllOrders = async (req, res) => {
     });
   }
 };
+
+// Cancel an order
+exports.cancelOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    console.log('Attempting to cancel order:', orderId);
+    
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+    
+    // Check if order can be cancelled
+    if (!['confirmed', 'processing'].includes(order.status.toLowerCase())) {
+      return res.status(400).json({ 
+        error: 'Order cannot be cancelled. Current status: ' + order.status 
+      });
+    }
+    
+    // Update order status to cancelled
+    order.status = 'cancelled';
+    await order.save();
+    
+    console.log(`Order ${orderId} cancelled successfully`);
+    res.json({ message: 'Order cancelled successfully', order });
+  } catch (error) {
+    console.error('Error cancelling order:', error);
+    res.status(500).json({ error: 'Failed to cancel order' });
+  }
+};

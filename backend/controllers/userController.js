@@ -232,4 +232,316 @@ const userLogin = async (req, res) => {
 //   }
 // };
 
-module.exports = { register ,userLogin};
+// Get user by ID
+const getUserById = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    console.log('Fetching user data for ID:', userId);
+    
+    const user = await userModel.findById(userId).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Format user data with fallbacks for missing fields
+    const userData = {
+      _id: user._id,
+      name: user.name || null,
+      email: user.email || null,
+      address: user.address || null,
+      addresses: user.addresses || [], // Include addresses array
+      country: user.country || null,
+      dob: user.dob || null,
+      avatar: user.avatar || null,
+      phoneNumber: user.phoneNumber || null,
+      creditCard: user.creditCard || null,
+      upiId: user.upiId || null,
+      cardHolderName: user.cardHolderName || null,
+      expiryDate: user.expiryDate || null,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    };
+    
+    console.log('User data fetched successfully:', userData._id);
+    res.json(userData);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ message: 'Failed to fetch user data' });
+  }
+};
+
+// Update user by ID
+const updateUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { name, address, phoneNumber, country, dob, avatar, creditCard, upiId, cardHolderName, expiryDate } = req.body;
+    
+    console.log('Updating user data for ID:', userId);
+    console.log('Update data received:', req.body);
+    
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    console.log('Current user data before update:', {
+      name: user.name,
+      address: user.address,
+      phoneNumber: user.phoneNumber,
+      country: user.country,
+      creditCard: user.creditCard ? '****' + user.creditCard.slice(-4) : null,
+      upiId: user.upiId
+    });
+
+    // Update only provided fields (including null/empty values to clear fields)
+    const updateData = {};
+    if (name !== undefined) updateData.name = name;
+    if (address !== undefined) updateData.address = address || null;
+    if (phoneNumber !== undefined) updateData.phoneNumber = phoneNumber || null;
+    if (country !== undefined) updateData.country = country || null;
+    if (dob !== undefined) updateData.dob = dob || null;
+    if (avatar !== undefined) updateData.avatar = avatar;
+    if (creditCard !== undefined) updateData.creditCard = creditCard || null;
+    if (upiId !== undefined) updateData.upiId = upiId || null;
+    if (cardHolderName !== undefined) updateData.cardHolderName = cardHolderName || null;
+    if (expiryDate !== undefined) updateData.expiryDate = expiryDate || null;
+
+    console.log('Fields being updated:', updateData);
+
+    const updatedUser = await userModel.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    console.log('User data after update in DB:', {
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      address: updatedUser.address,
+      phoneNumber: updatedUser.phoneNumber,
+      country: updatedUser.country
+    });
+
+    // Format updated user data
+    const userData = {
+      _id: updatedUser._id,
+      name: updatedUser.name || null,
+      email: updatedUser.email || null,
+      address: updatedUser.address || null,
+      addresses: updatedUser.addresses || [], // Include addresses array
+      country: updatedUser.country || null,
+      dob: updatedUser.dob || null,
+      avatar: updatedUser.avatar || null,
+      phoneNumber: updatedUser.phoneNumber || null,
+      creditCard: updatedUser.creditCard || null,
+      upiId: updatedUser.upiId || null,
+      cardHolderName: updatedUser.cardHolderName || null,
+      expiryDate: updatedUser.expiryDate || null,
+      createdAt: updatedUser.createdAt,
+      updatedAt: updatedUser.updatedAt
+    };
+
+    console.log('User data updated successfully for ID:', userData._id);
+    console.log('Final response data:', {
+      address: userData.address,
+      phoneNumber: userData.phoneNumber,
+      creditCard: userData.creditCard ? '****' + userData.creditCard.slice(-4) : null,
+      upiId: userData.upiId
+    });
+    res.json(userData);
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ message: 'Failed to update user data' });
+  }
+};
+
+// Change user password
+const changePassword = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { currentPassword, newPassword } = req.body;
+    
+    console.log('Changing password for user ID:', userId);
+    
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'Current password and new password are required' });
+    }
+
+    // Validate new password strength
+    const passwordValidation = validatePasswordStrength(newPassword);
+    if (!passwordValidation.isValid) {
+      return res.status(400).json({ 
+        message: 'Password does not meet requirements',
+        errors: passwordValidation.errors
+      });
+    }
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Verify current password
+    const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isCurrentPasswordValid) {
+      return res.status(400).json({ message: 'Current password is incorrect' });
+    }
+
+    // Hash new password
+    const saltRounds = 10;
+    const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    // Update password
+    await userModel.findByIdAndUpdate(userId, { password: hashedNewPassword });
+
+    console.log('Password changed successfully for user:', userId);
+    res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).json({ message: 'Failed to change password' });
+  }
+};
+
+// Get all addresses for a user
+const getUserAddresses = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    const user = await userModel.findById(userId).select('addresses');
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json(user.addresses || []);
+  } catch (error) {
+    console.error('Error fetching user addresses:', error);
+    res.status(500).json({ error: 'Failed to fetch addresses' });
+  }
+};
+
+// Create new address
+const createAddress = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { name, mobile, address, city, state, zipCode, tag } = req.body;
+    
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // If this is the first address, make it default
+    const isDefault = user.addresses.length === 0;
+    
+    const newAddress = {
+      name: name.trim(),
+      mobile: mobile.trim(),
+      address: address.trim(),
+      city: city?.trim() || '',
+      state: state?.trim() || '',
+      zipCode: zipCode?.trim() || '',
+      tag: tag || 'HOME',
+      isDefault
+    };
+    
+    user.addresses.push(newAddress);
+    await user.save();
+    
+    res.status(201).json(user.addresses[user.addresses.length - 1]);
+  } catch (error) {
+    console.error('Error creating address:', error);
+    res.status(500).json({ error: 'Failed to create address' });
+  }
+};
+
+// Update address
+const updateAddress = async (req, res) => {
+  try {
+    const { userId, addressId } = req.params;
+    const { name, mobile, address, city, state, zipCode, tag, isDefault } = req.body;
+    
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const addressIndex = user.addresses.findIndex(addr => addr._id.toString() === addressId);
+    if (addressIndex === -1) {
+      return res.status(404).json({ error: 'Address not found' });
+    }
+    
+    // Update address fields
+    user.addresses[addressIndex].name = name?.trim() || user.addresses[addressIndex].name;
+    user.addresses[addressIndex].mobile = mobile?.trim() || user.addresses[addressIndex].mobile;
+    user.addresses[addressIndex].address = address?.trim() || user.addresses[addressIndex].address;
+    user.addresses[addressIndex].city = city?.trim() || user.addresses[addressIndex].city;
+    user.addresses[addressIndex].state = state?.trim() || user.addresses[addressIndex].state;
+    user.addresses[addressIndex].zipCode = zipCode?.trim() || user.addresses[addressIndex].zipCode;
+    user.addresses[addressIndex].tag = tag || user.addresses[addressIndex].tag;
+    
+    // Handle default address
+    if (isDefault) {
+      // Remove default from all other addresses
+      user.addresses.forEach((addr, index) => {
+        addr.isDefault = index === addressIndex;
+      });
+    }
+    
+    await user.save();
+    res.json(user.addresses[addressIndex]);
+  } catch (error) {
+    console.error('Error updating address:', error);
+    res.status(500).json({ error: 'Failed to update address' });
+  }
+};
+
+// Delete address
+const deleteAddress = async (req, res) => {
+  try {
+    const { userId, addressId } = req.params;
+    
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    if (user.addresses.length <= 1) {
+      return res.status(400).json({ error: 'Cannot delete the only address' });
+    }
+    
+    const addressIndex = user.addresses.findIndex(addr => addr._id.toString() === addressId);
+    if (addressIndex === -1) {
+      return res.status(404).json({ error: 'Address not found' });
+    }
+    
+    const wasDefault = user.addresses[addressIndex].isDefault;
+    user.addresses.splice(addressIndex, 1);
+    
+    // If deleted address was default, make first address default
+    if (wasDefault && user.addresses.length > 0) {
+      user.addresses[0].isDefault = true;
+    }
+    
+    await user.save();
+    res.json({ message: 'Address deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting address:', error);
+    res.status(500).json({ error: 'Failed to delete address' });
+  }
+};
+
+module.exports = { 
+  register, 
+  userLogin, 
+  getUserById, 
+  updateUser, 
+  changePassword,
+  getUserAddresses,
+  createAddress,
+  updateAddress,
+  deleteAddress
+};

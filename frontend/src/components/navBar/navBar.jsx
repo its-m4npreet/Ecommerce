@@ -15,14 +15,61 @@ export const Navbar = () => {
     // Check localStorage for user or token on every render
     React.useEffect(() => {
         const checkAuth = () => {
-            const user = localStorage.getItem('user');
-            const token = localStorage.getItem('token');
-            setIsLoggedIn(!!user || !!token);
+            const userStr = localStorage.getItem('user');
+            const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+            
+            // More thorough validation
+            let hasValidUser = false;
+            
+            if (userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    // Check if user object has essential properties
+                    hasValidUser = user && (user._id || user.id) && user.email;
+                } catch (error) {
+                    console.warn('Invalid user data in localStorage:', error);
+                    localStorage.removeItem('user');
+                }
+            }
+            
+            const hasValidToken = !!token;
+            
+            // Only consider logged in if we have both valid user data AND token
+            const isAuthenticated = hasValidUser && hasValidToken;
+            
+            setIsLoggedIn(isAuthenticated);
+            
+            // If user data is invalid but we're on a protected route, redirect
+            if (!isAuthenticated && (
+                location.pathname === '/account' || 
+                location.pathname === '/wishlist' || 
+                location.pathname === '/trolley'
+            )) {
+                console.log('Invalid user session detected, cleaning up...');
+                localStorage.removeItem('user');
+                localStorage.removeItem('token');
+                localStorage.removeItem('authToken');
+                // Dispatch event to notify other components
+                window.dispatchEvent(new Event('userLoggedOut'));
+            }
         };
+        
+        // Initial check
         checkAuth();
+        
+        // Listen for storage changes (when localStorage is updated from other tabs)
         window.addEventListener('storage', checkAuth);
-        return () => window.removeEventListener('storage', checkAuth);
-    });
+        
+        // Listen for custom events (when user logs out or login state changes)
+        window.addEventListener('userLoggedOut', checkAuth);
+        window.addEventListener('userLoggedIn', checkAuth);
+        
+        return () => {
+            window.removeEventListener('storage', checkAuth);
+            window.removeEventListener('userLoggedOut', checkAuth);
+            window.removeEventListener('userLoggedIn', checkAuth);
+        };
+    }, [location.pathname]);
 
     return (
         <nav className="border-b border-gray-700 flex h-14 w-full justify-evenly items-center shadow-lg gap-5 bg-[#18181b]">
@@ -49,6 +96,35 @@ export const Navbar = () => {
 }
 
 const NavLinks = () => {
+    const handleProtectedRoute = (e) => {
+        // Double-check user data before navigating to protected routes
+        const userStr = localStorage.getItem('user');
+        const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+        
+        if (!userStr || !token) {
+            e.preventDefault();
+            localStorage.clear();
+            window.dispatchEvent(new Event('userLoggedOut'));
+            window.location.href = '/auth/login';
+            return;
+        }
+        
+        try {
+            const user = JSON.parse(userStr);
+            if (!user || (!user._id && !user.id) || !user.email) {
+                e.preventDefault();
+                localStorage.clear();
+                window.dispatchEvent(new Event('userLoggedOut'));
+                window.location.href = '/auth/login';
+            }
+        } catch {
+            e.preventDefault();
+            localStorage.clear();
+            window.dispatchEvent(new Event('userLoggedOut'));
+            window.location.href = '/auth/login';
+        }
+    };
+
     return (
         <div className="links flex gap-3">
             <NavLink
@@ -80,6 +156,7 @@ const NavLinks = () => {
             </NavLink>
             <NavLink
                 to="/account"
+                onClick={handleProtectedRoute}
                 className={({ isActive }) =>
                     `flex items-center gap-2 px-4 py-2 rounded font-medium transition-colors duration-200 ${isActive ? "active" : "text-white hover:text-cyan-400"}`
                 }
@@ -89,6 +166,7 @@ const NavLinks = () => {
             </NavLink>
             <NavLink
                 to="/wishlist"
+                onClick={handleProtectedRoute}
                 className={({ isActive }) =>
                     `flex items-center gap-2 px-4 py-2 rounded font-medium transition-colors duration-200 ${isActive ? "active" : "text-white hover:text-cyan-400"}`
                 }
@@ -98,6 +176,7 @@ const NavLinks = () => {
             </NavLink>
             <NavLink
                 to="/trolley"
+                onClick={handleProtectedRoute}
                 className={({ isActive }) =>
                     `flex items-center gap-2 px-4 py-2 rounded font-medium transition-colors duration-200 ${isActive ? "active" : "text-white hover:text-cyan-400"}`
                 }

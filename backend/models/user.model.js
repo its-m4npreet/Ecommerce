@@ -30,9 +30,86 @@ const userSchema = new Schema(
       type: String,
       default: process.env.Default_Avatar,
     },
-  phoneNumber:{
-    type:String
-  }
+    phoneNumber: {
+      type: String,
+      default: null,
+      trim: true
+    },
+    address: {
+      type: String,
+      default: null,
+      trim: true
+    },
+    country: {
+      type: String,
+      default: null,
+      trim: true
+    },
+    dob: {
+      type: String,
+      default: null
+    },
+    creditCard: {
+      type: String,
+      default: null,
+      trim: true
+    },
+    upiId: {
+      type: String,
+      default: null,
+      trim: true
+    },
+    cardHolderName: {
+      type: String,
+      default: null,
+      trim: true
+    },
+    expiryDate: {
+      type: String,
+      default: null,
+      trim: true
+    },
+    addresses: [{
+      name: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      mobile: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      address: {
+        type: String,
+        required: true,
+        trim: true
+      },
+      city: {
+        type: String,
+        trim: true,
+        default: ''
+      },
+      state: {
+        type: String,
+        trim: true,
+        default: ''
+      },
+      zipCode: {
+        type: String,
+        trim: true,
+        default: ''
+      },
+      tag: {
+        type: String,
+        enum: ['HOME', 'WORK', 'OTHER'],
+        default: 'HOME'
+      },
+      isDefault: {
+        type: Boolean,
+        default: false
+      }
+    }]
   },
   {
     timestamps: true,

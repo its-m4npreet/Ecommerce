@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FaRegHeart, FaTrashAlt } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
 
 
 const Wishlist = () => {
 	const [products, setProducts] = useState([]);
 	const [wishlist, setWishlist] = useState([]);
+	const [wishlistDetails, setWishlistDetails] = useState({});
 
 	useEffect(() => {
 		// Fetch all products from backend
@@ -12,6 +14,12 @@ const Wishlist = () => {
 			.then(res => res.json())
 			.then(data => setProducts(data));
 	}, []);
+
+	useEffect(() => {
+		// Get wishlist details from localStorage
+		const details = JSON.parse(localStorage.getItem('wishlistDetails')) || {};
+		setWishlistDetails(details);
+	}, [wishlist]);
 
 	useEffect(() => {
 		// Get wishlist product IDs from localStorage
@@ -25,13 +33,39 @@ const Wishlist = () => {
 		const wishlistIds = JSON.parse(localStorage.getItem('wishlist')) || [];
 		const updatedWishlistIds = wishlistIds.filter(wid => wid !== id);
 		localStorage.setItem('wishlist', JSON.stringify(updatedWishlistIds));
+		
+		// Also remove from wishlist details
+		const wishlistDetails = JSON.parse(localStorage.getItem('wishlistDetails')) || {};
+		delete wishlistDetails[id];
+		localStorage.setItem('wishlistDetails', JSON.stringify(wishlistDetails));
+		
 		setWishlist(wishlist.filter(item => item.id !== id));
 	};
 	const handleTrolley = (item) => {
 		const trolley = JSON.parse(localStorage.getItem('trolley')) || [];
 		if (!trolley.includes(item.id)) {
-			trolley.push(item.id);
+			// Transfer wishlist details to trolley details first to get quantity
+			const wishlistDetails = JSON.parse(localStorage.getItem('wishlistDetails')) || {};
+			const trolleyDetails = JSON.parse(localStorage.getItem('trolleyDetails')) || {};
+			
+			let quantityToAdd = 1; // Default quantity
+			
+			if (wishlistDetails[item.id]) {
+				quantityToAdd = wishlistDetails[item.id].quantity || 1;
+				trolleyDetails[item.id] = {
+					size: wishlistDetails[item.id].size,
+					quantity: quantityToAdd,
+					addedAt: new Date().toISOString()
+				};
+				localStorage.setItem('trolleyDetails', JSON.stringify(trolleyDetails));
+			}
+			
+			// Add to trolley array based on quantity (add multiple instances)
+			for (let i = 0; i < quantityToAdd; i++) {
+				trolley.push(item.id);
+			}
 			localStorage.setItem('trolley', JSON.stringify(trolley));
+			
 			removeFromWishlist(item.id);
 		}
 	};
@@ -46,10 +80,26 @@ const Wishlist = () => {
 						className="bg-[#232326] rounded-xl overflow-hidden flex flex-col border border-gray-700"
 					>
 						<div className="aspect-w-1 aspect-h-1 bg-gray-900 flex items-center justify-center">
+							 <NavLink to={`/product/${item.id}`}  className="block w-full h-full">
 							<img src={item.image || item.images} alt={item.title} className="object-cover w-full h-56" />
+							</NavLink>
 						</div>
 						<div className="p-4 flex-1 flex flex-col justify-between gap-1">
 							<h2 className="text-lg font-semibold text-gray-100 mb-2 truncate">{item.title}</h2>
+							{(wishlistDetails[item.id]?.size || wishlistDetails[item.id]?.quantity) && (
+								<div className="mb-1 flex gap-2">
+									{wishlistDetails[item.id]?.size && (
+										<span className="bg-[#444] text-gray-200 text-xs px-2 py-0.5 rounded">
+											Size: {wishlistDetails[item.id].size}
+										</span>
+									)}
+									{wishlistDetails[item.id]?.quantity && (
+										<span className="bg-[#444] text-gray-200 text-xs px-2 py-0.5 rounded">
+											Qty: {wishlistDetails[item.id].quantity}
+										</span>
+									)}
+								</div>
+							)}
 							<div className="text-[gray] font-bold text-base">₹ {(item.price * 80).toLocaleString()}</div>
 							<div className="flex justify-between items-center mt-auto">
 								<button className="ml-2 p-2 rounded-full bg-gray-800 hover:bg-pink-500 transition-colors text-gray-300 hover:text-white shadow group-hover:scale-110" onClick={()=>{handleTrolley(item)}}> 
@@ -66,9 +116,20 @@ const Wishlist = () => {
 						</div>
 					</div>
 				)) : (
-					<div className="col-span-full text-center text-gray-400 text-lg py-16 flex flex-col items-center">
-						<FaRegHeart className="text-5xl mb-4 text-gray-600" />
-						<div>No items in your wishlist.</div>
+					<div className="col-span-full flex flex-col items-center justify-center py-16 px-6">
+						<FaRegHeart className="text-6xl mb-6 text-gray-600" />
+						<h3 className="text-2xl font-semibold text-white mb-4">
+							No Items in Wishlist
+						</h3>
+						<p className="text-gray-400 text-center mb-8 max-w-md">
+							You haven't added any items to your wishlist yet. Start browsing to discover products you love!
+						</p>
+						<NavLink
+							to="/"
+							className="px-8 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+						>
+							Start Shopping
+						</NavLink>
 					</div>
 				)}
 			</div>

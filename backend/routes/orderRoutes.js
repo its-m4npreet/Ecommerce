@@ -11,4 +11,7 @@ router.get('/user/:userId', orderController.getOrdersByUser);
 // Get all orders (admin)
 router.get('/', orderController.getAllOrders);
 
+// Cancel order
+router.patch('/:orderId/cancel', orderController.cancelOrder);
+
 module.exports = router;

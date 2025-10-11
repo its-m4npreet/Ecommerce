@@ -18,8 +18,10 @@ const productRoutes = require('./routes/productRoutes');
 app.use('/api/products', productRoutes);
 
 // auth route
-
 app.use("/auth", userRouter);
+
+// user routes
+app.use("/api/users", userRouter);
 
 const orderRoutes = require('./routes/orderRoutes');
 app.use('/api/orders', orderRoutes);

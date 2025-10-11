@@ -6,6 +6,7 @@ const product=
     "slug": "classic-black-hooded-sweatshirt",
     "price": 79,
     "description": "Elevate your casual wardrobe with our Classic Black Hooded Sweatshirt. Made from high-quality, soft fabric that ensures comfort and durability, this hoodie features a spacious kangaroo pocket and an adjustable drawstring hood. Its versatile design makes it perfect for a relaxed day at home or a casual outing.",
+    "sizes": ["XS", "S", "M", "L", "XL", "XXL"],
     "category": {
       "id": 1,
       "name": "clothes",
@@ -28,6 +29,7 @@ const product=
     "slug": "classic-comfort-fit-joggers",
     "price": 25,
     "description": "Discover the perfect blend of style and comfort with our Classic Comfort Fit Joggers. These versatile black joggers feature a soft elastic waistband with an adjustable drawstring, two side pockets, and ribbed ankle cuffs for a secure fit. Made from a lightweight and durable fabric, they are ideal for both active days and relaxed lounging.",
+    "sizes": ["S", "M", "L", "XL"],
     "category": {
       "id": 1,
       "name": "clothes",
@@ -203,6 +205,7 @@ const product=
     "slug": "classic-white-crew-neck-t-shirt",
     "price": 39,
     "description": "Elevate your basics with this versatile white crew neck tee. Made from a soft, breathable cotton blend, it offers both comfort and durability. Its sleek, timeless design ensures it pairs well with virtually any outfit. Ideal for layering or wearing on its own, this t-shirt is a must-have staple for every wardrobe.",
+    "sizes": ["XS", "S", "M", "L", "XL"],
     "category": {
       "id": 1,
       "name": "clothes",
@@ -618,6 +621,7 @@ const product=
     "slug": "futuristic-holographic-soccer-cleats",
     "price": 39,
     "description": "Step onto the field and stand out from the crowd with these eye-catching holographic soccer cleats. Designed for the modern player, these cleats feature a sleek silhouette, lightweight construction for maximum agility, and durable studs for optimal traction. The shimmering holographic finish reflects a rainbow of colors as you move, ensuring that you'll be noticed for both your skills and style. Perfect for the fashion-forward athlete who wants to make a statement.",
+    "sizes": ["6", "7", "8", "9", "10", "11", "12"],
     "category": {
       "id": 4,
       "name": "Shoes",
@@ -882,6 +886,7 @@ const product=
     "slug": "radiant-citrus-eau-de-parfum",
     "price": 73,
     "description": "Indulge in the essence of summer with this vibrant citrus-scented Eau de Parfum. Encased in a sleek glass bottle with a bold orange cap, this fragrance embodies freshness and elegance. Perfect for daily wear, it's an olfactory delight that leaves a lasting, zesty impression.",
+    "sizes": ["30ml", "50ml", "100ml"],
     "category": {
       "id": 5,
       "name": "Miscellaneous",

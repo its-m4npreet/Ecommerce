@@ -59,6 +59,12 @@ const Trolley = () => {
     const trolleyIds = JSON.parse(localStorage.getItem('trolley')) || [];
     const updatedTrolleyIds = trolleyIds.filter(tid => tid !== itemId);
     localStorage.setItem('trolley', JSON.stringify(updatedTrolleyIds));
+    
+    // Also remove from trolley details
+    const trolleyDetails = JSON.parse(localStorage.getItem('trolleyDetails')) || {};
+    delete trolleyDetails[itemId];
+    localStorage.setItem('trolleyDetails', JSON.stringify(trolleyDetails));
+    
     setTrolley(prev => prev.filter(item => item.id !== itemId));
   };
 
@@ -87,6 +93,57 @@ const Trolley = () => {
 export default Trolley;
 
 const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
+  // User data state
+  const [userData, setUserData] = React.useState({
+    name: 'JOHN DEO',
+    address: 'NEW DELHI'
+  });
+
+  // Get trolley details from localStorage
+  const [trolleyDetails, setTrolleyDetails] = React.useState({});
+  
+  React.useEffect(() => {
+    const details = JSON.parse(localStorage.getItem('trolleyDetails')) || {};
+    setTrolleyDetails(details);
+  }, [trolley]);
+
+  // Fetch user data on component mount
+  React.useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // First try to get user from localStorage
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        if (storedUser) {
+          // If user has address data, use it
+          if (storedUser.name || storedUser.address) {
+            setUserData({
+              name: storedUser.name || 'JOHN DEO',
+              address: storedUser.address || storedUser.city || 'NEW DELHI'
+            });
+          }
+          
+          // Also try to fetch fresh data from backend
+          const userId = storedUser._id || storedUser.id;
+          if (userId) {
+            const response = await fetch(`http://localhost:8080/api/users/${userId}`);
+            if (response.ok) {
+              const freshUser = await response.json();
+              setUserData({
+                name: freshUser.name || storedUser.name || 'JOHN DEO',
+                address: freshUser.address || storedUser.address || storedUser.city || 'NEW DELHI'
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        // Keep default values if error occurs
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   // Calculate totals based on trolley items
   // If price is in USD, convert to INR
   const getINRPrice = (item) => {
@@ -98,8 +155,8 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
   const totalMRP = trolley.reduce((sum, item) => sum + getINRPrice(item), 0);
   // Discount is ₹200 less per item
   const discount = -200 * trolley.length;
-  const coupon = "-10%";
-  const platformFee = 10;
+  const coupon = trolley.length > 0 ? "-10%" : "₹0";
+  const platformFee = trolley.length > 0 ? 10 : 0;
   // Donation state
   const [donateChecked, setDonateChecked] = React.useState(false);
   const [donateAmount, setDonateAmount] = React.useState(0);
@@ -112,9 +169,9 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
         <div className="flex justify-between items-center mb-4">
           <div>
             <div className="text-gray-200 text-sm">
-              DELIVER TO: <span className="font-semibold">JOHN DEO</span>
+              DELIVER TO: <span className="font-semibold">{userData.name}</span>
             </div>
-            <div className="text-gray-400 text-xs">{`NEW DELHI`}</div>
+            <div className="text-gray-400 text-xs">{userData.address}</div>
           </div>
           <button className=" px-4 py-1 rounded" style={{background :"none",border:"1px solid gray", cursor:"pointer"}} onClick={goToAddress}>
             change
@@ -131,18 +188,20 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
             : "NO ITEM SELECTED"}
         </div>
         <div>
-          {trolley.map((item) => (
+          {trolley.length > 0 ? trolley.map((item) => (
             <div
               key={item.id}
               className="relative flex bg-[#23232a] rounded-lg p-4 mb-4 items-center border border-gray-700"
             >
               {/* Product Image */}
               <div className="w-20 h-20 bg-gray-700 rounded mr-4 flex items-center justify-center overflow-hidden">
+                <NavLink to={`/product/${item.id}`}  className="block w-full h-full">
                 <img
                   src={Array.isArray(item.images) ? item.images[0] : (item.images || item.image)}
                   alt={item.title}
                   className="w-full h-full object-cover rounded"
                 />
+                </NavLink>
               </div>
               {/* Product Details */}
               <div className="flex-1 min-w-0">
@@ -160,11 +219,13 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
                   High quality, latest model, best price 
                 </div>
                 <div className="flex gap-2 mb-1">
+                  {trolleyDetails[item.id]?.size && (
+                    <span className="bg-[#444] text-gray-200 text-xs px-2 py-0.5 rounded min-w-[48px] text-center">
+                      Size: {trolleyDetails[item.id].size}
+                    </span>
+                  )}
                   <span className="bg-[#444] text-gray-200 text-xs px-2 py-0.5 rounded min-w-[48px] text-center">
-                    Size: M
-                  </span>
-                  <span className="bg-[#444] text-gray-200 text-xs px-2 py-0.5 rounded min-w-[48px] text-center">
-                    Qty: {item.quantity || 1}
+                    Qty: {trolleyDetails[item.id]?.quantity || 1}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 mb-1">
@@ -186,7 +247,23 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
                 </div>
               </div>
             </div>
-          ))}
+          )) : (
+            <div className="flex flex-col items-center justify-center py-16 px-6">
+              <FaShoppingCart className="text-6xl mb-6 text-gray-600" />
+              <h3 className="text-2xl font-semibold text-white mb-4">
+                Your Trolley is Empty
+              </h3>
+              <p className="text-gray-400 text-center mb-8 max-w-md">
+                You haven't added any items to your trolley yet. Start shopping to fill up your cart!
+              </p>
+              <NavLink
+                to="/"
+                className="px-8 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              >
+                Shop Now
+              </NavLink>
+            </div>
+          )}
         </div>
       </div>
       {/* Right: Discount, Donation, Price Summary */}
@@ -270,7 +347,16 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
             <span>Total Amount</span>
             <span>&#8377; {totalAmount}</span>
           </div>
-          <button className="w-full text-white rounded py-2 font-semibold transition-colors " onClick={goToAddress}>
+          <button 
+            className={`w-full rounded py-2 font-semibold transition-colors ${
+              trolley.length > 0 
+                ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer' 
+                : 'bg-gray-600 text-gray-400 cursor-not-allowed disabled:cursor-not-allowed'
+            }`}
+            onClick={trolley.length > 0 ? goToAddress : undefined}
+            disabled={trolley.length === 0}
+            style={trolley.length === 0 ? { cursor: 'not-allowed' } : {}}
+          >
             PURCHASE
           </button>
         </div>
@@ -282,22 +368,289 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
 
 
 const AddressChecking = ({ goToPayment, goToTrolley }) => {
-  const [address, setAddress] = React.useState({
-    name: "Manpreet",
-    mobile: "9876036134",
-    address: "House no. 446 near jog raj aata chaki saila khurd Garhshanker hoshiarpur , Garhshanker Hoshiarpur, Punjab - 144529",
-    tag: "HOME"
-  });
+  const [addresses, setAddresses] = React.useState([]);
+  const [selectedAddressId, setSelectedAddressId] = React.useState(null);
   const [showForm, setShowForm] = React.useState(false);
-  const [form, setForm] = React.useState(address);
+  const [form, setForm] = React.useState({
+    name: '',
+    mobile: '',
+    'H.no': '',
+    apartment: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    tag: 'HOME'
+  });
+  const [loading, setLoading] = React.useState(true);
+  const [editingId, setEditingId] = React.useState(null);
+
+  // Fetch user addresses from backend on component mount
+  React.useEffect(() => {
+    const fetchUserAddresses = async () => {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user && (user._id || user.id)) {
+          // Try to fetch multiple addresses first (new API)
+          try {
+            const addressesResponse = await fetch(`http://localhost:8080/api/users/${user._id || user.id}/addresses`);
+            if (addressesResponse.ok) {
+              const userAddresses = await addressesResponse.json();
+              if (userAddresses && userAddresses.length > 0) {
+                setAddresses(userAddresses);
+                // Select the first address by default or the one marked as default
+                const defaultAddress = userAddresses.find(addr => addr.isDefault) || userAddresses[0];
+                setSelectedAddressId(defaultAddress._id);
+                setLoading(false);
+                return;
+              }
+            }
+          } catch {
+            console.log('Multiple addresses API not available, falling back to single address');
+          }
+
+          // Fallback to single address API (existing system)
+          try {
+            const userResponse = await fetch(`http://localhost:8080/api/users/${user._id || user.id}`);
+            if (userResponse.ok) {
+              const userData = await userResponse.json();
+              const singleAddress = {
+                _id: 'single-address',
+                name: userData.name || user.name || "User",
+                mobile: userData.mobile || user.mobile || "Mobile not provided",
+                address: userData.address || user.address || user.city || "Address not provided",
+                tag: userData.tag || "HOME",
+                isDefault: true
+              };
+              setAddresses([singleAddress]);
+              setSelectedAddressId('single-address');
+            } else {
+              // Final fallback to localStorage data
+              const fallbackAddress = {
+                _id: 'localStorage-fallback',
+                name: user.name || "User",
+                mobile: user.mobile || "Mobile not provided", 
+                address: user.address || user.city || "Address not provided",
+                tag: "HOME",
+                isDefault: true
+              };
+              setAddresses([fallbackAddress]);
+              setSelectedAddressId('localStorage-fallback');
+            }
+          } catch (singleAddressError) {
+            console.error('Error fetching single address:', singleAddressError);
+            // Final fallback
+            const fallbackAddress = {
+              _id: 'error-fallback',
+              name: user.name || "User",
+              mobile: user.mobile || "Mobile not provided",
+              address: user.address || user.city || "Address not provided", 
+              tag: "HOME",
+              isDefault: true
+            };
+            setAddresses([fallbackAddress]);
+            setSelectedAddressId('error-fallback');
+          }
+        }
+      } catch (error) {
+        console.error('Error in fetchUserAddresses:', error);
+        // Use fallback data if error occurs
+        const user = JSON.parse(localStorage.getItem('user')) || {};
+        const fallbackAddress = {
+          _id: 'catch-fallback',
+          name: user.name || "User",
+          mobile: user.mobile || "Mobile not provided",
+          address: user.address || user.city || "Address not provided", 
+          tag: "HOME",
+          isDefault: true
+        };
+        setAddresses([fallbackAddress]);
+        setSelectedAddressId('catch-fallback');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserAddresses();
+  }, []);
 
   const handleFormChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-  const handleFormSubmit = (e) => {
+
+  const handleDeleteAddress = async (addressId) => {
+    if (addresses.length <= 1) {
+      alert('Cannot delete the only address. Please add another address first.');
+      return;
+    }
+
+    // Don't allow deletion of fallback addresses from single address system
+    if (addressId.startsWith('single-') || addressId.startsWith('localStorage-') || addressId.startsWith('error-') || addressId.startsWith('catch-')) {
+      alert('This address cannot be deleted. Please edit it instead.');
+      return;
+    }
+
+    if (window.confirm('Are you sure you want to delete this address?')) {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const response = await fetch(`http://localhost:8080/api/users/${user._id || user.id}/addresses/${addressId}`, {
+          method: 'DELETE'
+        });
+
+        if (response.ok) {
+          // Remove address from local state
+          setAddresses(prev => prev.filter(addr => addr._id !== addressId));
+          
+          // If the deleted address was selected, select the first remaining address
+          if (selectedAddressId === addressId) {
+            const remainingAddresses = addresses.filter(addr => addr._id !== addressId);
+            if (remainingAddresses.length > 0) {
+              setSelectedAddressId(remainingAddresses[0]._id);
+            }
+          }
+          
+          alert('Address deleted successfully!');
+        } else {
+          alert('Failed to delete address. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error deleting address:', error);
+        alert('Error deleting address. Please check your connection and try again.');
+      }
+    }
+  };
+  
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setAddress(form);
-    setShowForm(false);
+    setLoading(true);
+    
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (user && (user._id || user.id)) {
+        // Prepare address data for backend
+        const addressData = {
+          name: form.name,
+          mobile: form.mobile,
+          address: `${form['H.no'] || ''}, ${form.apartment || ''}, ${form.city || ''}, ${form.state || ''} - ${form.zipCode || ''}`.replace(/,\s*,/g, ',').replace(/^,\s*|,\s*$/g, ''),
+          city: form.city,
+          state: form.state,
+          zipCode: form.zipCode,
+          tag: form.tag || 'HOME',
+          isDefault: addresses.length === 0 // Set as default if it's the first address
+        };
+
+        console.log('Saving address to backend:', addressData);
+
+        let response;
+        let isUsingMultipleAddresses = !editingId || !editingId.startsWith('single-') && !editingId.startsWith('localStorage-') && !editingId.startsWith('error-') && !editingId.startsWith('catch-');
+
+        if (isUsingMultipleAddresses) {
+          // Try multiple addresses API first
+          try {
+            if (editingId && editingId !== 'new') {
+              // Update existing address
+              response = await fetch(`http://localhost:8080/api/users/${user._id || user.id}/addresses/${editingId}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(addressData)
+              });
+            } else {
+              // Create new address
+              response = await fetch(`http://localhost:8080/api/users/${user._id || user.id}/addresses`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(addressData)
+              });
+            }
+          } catch {
+            isUsingMultipleAddresses = false;
+          }
+        }
+        
+        if (!isUsingMultipleAddresses || !response || !response.ok) {
+          // Fallback to single address API (update user profile)
+          console.log('Falling back to single address API');
+          response = await fetch(`http://localhost:8080/api/users/${user._id || user.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(addressData)
+          });
+        }
+
+        if (response.ok) {
+          const savedData = await response.json();
+          console.log('Address saved successfully:', savedData);
+          
+          if (isUsingMultipleAddresses && savedData._id) {
+            // Multiple addresses system
+            if (editingId && editingId !== 'new') {
+              // Update existing address in state
+              setAddresses(prev => prev.map(addr => 
+                addr._id === editingId ? { ...savedData, _id: savedData._id || editingId } : addr
+              ));
+            } else {
+              // Add new address to state
+              setAddresses(prev => [...prev, savedData]);
+              setSelectedAddressId(savedData._id);
+            }
+          } else {
+            // Single address system - update the single address
+            const updatedAddress = {
+              _id: editingId || 'single-address',
+              name: addressData.name,
+              mobile: addressData.mobile,
+              address: addressData.address,
+              tag: addressData.tag,
+              isDefault: true
+            };
+            setAddresses([updatedAddress]);
+            setSelectedAddressId(updatedAddress._id);
+            
+            // Update localStorage
+            const user = JSON.parse(localStorage.getItem('user'));
+            localStorage.setItem('user', JSON.stringify({ ...user, ...addressData }));
+          }
+          
+          // Reset form and close
+          setForm({
+            name: '',
+            mobile: '',
+            'H.no': '',
+            apartment: '',
+            city: '',
+            state: '',
+            zipCode: '',
+            tag: 'HOME'
+          });
+          setEditingId(null);
+          setShowForm(false);
+          
+          alert(editingId && editingId !== 'new' ? 'Address updated successfully!' : 'Address added successfully!');
+        } else {
+          let errorMessage = 'Failed to save address. Please try again.';
+          try {
+            const errorData = await response.json();
+            console.error('Failed to save address:', errorData);
+            errorMessage = errorData.message || errorMessage;
+          } catch {
+            console.error('Failed to save address: Server returned', response.status);
+          }
+          alert(errorMessage);
+        }
+      } else {
+        alert('User not found. Please log in again.');
+      }
+    } catch (error) {
+      console.error('Error saving address:', error);
+      alert('Error saving address. Please check your connection and try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -306,24 +659,86 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
         <div className="flex justify-between items-center mb-4">
           <div className="text-lg font-semibold ">Select Delivery Address</div>
         </div>
-        <div className="text-xs text-gray-500 font-semibold mb-2">DEFAULT ADDRESS</div>
-        {/* Address Card */}
-        <div className="border rounded-lg p-4 flex flex-col gap-2 bg-[transparent] relative mb-2">
-          <div className="flex items-center gap-2">
-            <input type="radio" checked readOnly style={{ accentColor: 'green', width: '1rem', height: '1rem' }} />
-            <span className="font-semibold ">{address.name}</span>
-            <span className="  text-xs px-2 py-0.5 rounded-full ml-2 bg-green-300 text-black">{address.tag}</span>
+        <div className="text-xs text-gray-500 font-semibold mb-2">SELECT DELIVERY ADDRESS</div>
+        {/* Address Cards */}
+        {loading ? (
+          <div className="border rounded-lg p-4 flex flex-col gap-2 bg-[transparent] relative mb-2">
+            <div className="animate-pulse">
+              <div className="h-4 bg-gray-600 rounded mb-2"></div>
+              <div className="h-3 bg-gray-600 rounded mb-2"></div>
+              <div className="h-3 bg-gray-600 rounded w-3/4"></div>
+            </div>
           </div>
-          <div className=" text-sm">
-            {address.address}
-          </div>
-          <div className=" text-sm">
-            Mobile: <span className="font-semibold">{address.mobile}</span>
-          </div>
-          <div className="flex gap-2 mt-2">
-            <button className="border border-gray-300  px-4 py-1 rounded hover:bg-gray-100 transition" onClick={() => { setShowForm(true); setForm(address); }}>EDIT</button>
-          </div>
-        </div>
+        ) : (
+          addresses.map((address) => (
+            <div key={address._id} className="border rounded-lg p-4 bg-[transparent] relative mb-2">
+              {/* Header with radio button, name, tags and action buttons */}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <input 
+                    type="radio" 
+                    name="selectedAddress"
+                    checked={selectedAddressId === address._id}
+                    onChange={() => setSelectedAddressId(address._id)}
+                    style={{ accentColor: 'green', width: '1rem', height: '1rem' }} 
+                  />
+                  <span className="font-semibold ">{address.name}</span>
+                  <span className="text-xs px-2 py-0.5 rounded-full ml-2 bg-green-300 text-black">{address.tag}</span>
+                  {address.isDefault && (
+                    <span className="text-xs px-2 py-0.5 rounded-full ml-2 bg-blue-300 text-black">DEFAULT</span>
+                  )}
+                </div>
+                
+                {/* Action buttons moved to top right */}
+                <div className="flex gap-2">
+                  <button 
+                    className="border border-gray-300 p-1.5 rounded hover:bg-gray-100 transition flex items-center justify-center" 
+                    title="Edit Address"
+                    onClick={() => { 
+                      setShowForm(true);
+                      setEditingId(address._id);
+                      // Parse the existing address to populate form fields
+                      const addressParts = address.address.split(',').map(part => part.trim());
+                      setForm({
+                        name: address.name,
+                        mobile: address.mobile,
+                        'H.no': addressParts[0] || '',
+                        apartment: addressParts[1] || '',
+                        city: addressParts[2] || '',
+                        state: addressParts[3]?.split('-')[0]?.trim() || '',
+                        zipCode: addressParts[3]?.split('-')[1]?.trim() || '',
+                        tag: address.tag
+                      });
+                    }}
+                  >
+                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+                  {addresses.length > 1 && !address._id.startsWith('single-') && !address._id.startsWith('localStorage-') && !address._id.startsWith('error-') && !address._id.startsWith('catch-') && (
+                    <button 
+                      className="border border-red-300 text-red-500 p-1.5 rounded hover:bg-red-50 transition flex items-center justify-center"
+                      title="Delete Address"
+                      onClick={() => handleDeleteAddress(address._id)}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              </div>
+              
+              {/* Address details */}
+              <div className="text-sm mb-2">
+                {address.address}
+              </div>
+              <div className="text-sm">
+                Mobile: <span className="font-semibold">{address.mobile}</span>
+              </div>
+            </div>
+          ))
+        )}
         {/* Address Form */}
         {showForm && (
           <AddressForm
@@ -333,12 +748,42 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
             onCancel={() => setShowForm(false)}
           />
         )}
-        <div className="border border-dashed  rounded-lg p-4 font-semibold cursor-pointer transition mb-4" onClick={() => { setShowForm(true); setForm({ name: '', mobile: '', address: '', tag: '' }); }}>
+        <div className="border border-dashed rounded-lg p-4 font-semibold cursor-pointer transition mb-4" onClick={() => { 
+          setShowForm(true);
+          setEditingId('new');
+          setForm({ 
+            name: '', 
+            mobile: '', 
+            'H.no': '', 
+            city: '', 
+            state: '', 
+            zipCode: '', 
+            apartment: '', 
+            tag: 'HOME' 
+          }); 
+        }}>
           + Add New Address
         </div>
         <div className="flex justify-between gap-2">
           <button className=" text-white px-6 py-2 rounded font-semibold transition" onClick={goToTrolley}>Back</button>
-          <button className=" text-white px-6 py-2 rounded font-semibold transition" onClick={goToPayment}>Next</button>
+          <button 
+            className={`text-white px-6 py-2 rounded font-semibold transition ${
+              selectedAddressId ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-500 cursor-not-allowed'
+            }`}
+            onClick={() => {
+              if (selectedAddressId) {
+                // Store selected address in localStorage for payment page
+                const selectedAddress = addresses.find(addr => addr._id === selectedAddressId);
+                if (selectedAddress) {
+                  localStorage.setItem('selectedDeliveryAddress', JSON.stringify(selectedAddress));
+                }
+                goToPayment();
+              }
+            }}
+            disabled={!selectedAddressId}
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
@@ -360,9 +805,55 @@ const PaymentPage = ({ goToAddress }) => {
     
     const trolleyIds = JSON.parse(localStorage.getItem('trolley')) || [];
     const user = JSON.parse(localStorage.getItem('user'));
+    const trolleyDetails = JSON.parse(localStorage.getItem('trolleyDetails')) || {};
     
     console.log('Trolley IDs:', trolleyIds);
     console.log('User:', user);
+    console.log('Trolley Details:', trolleyDetails);
+
+    // Get selected delivery address
+    let userAddress = null;
+    try {
+      // First try to get selected address from localStorage
+      const selectedAddress = JSON.parse(localStorage.getItem('selectedDeliveryAddress'));
+      if (selectedAddress) {
+        userAddress = {
+          name: selectedAddress.name || 'Customer',
+          address: selectedAddress.address || 'Address not provided',
+          mobile: selectedAddress.mobile || 'Mobile not provided',
+          email: user?.email || 'Email not provided',
+          tag: selectedAddress.tag || 'HOME'
+        };
+        console.log('Using selected delivery address:', userAddress);
+      } else {
+        // Fallback to fetching user's default address
+        if (user && (user._id || user.id)) {
+          const userResponse = await fetch(`http://localhost:8080/api/users/${user._id || user.id}/addresses`);
+          if (userResponse.ok) {
+            const addresses = await userResponse.json();
+            const defaultAddress = addresses.find(addr => addr.isDefault) || addresses[0];
+            if (defaultAddress) {
+              userAddress = {
+                name: defaultAddress.name || 'Customer',
+                address: defaultAddress.address || 'Address not provided',
+                mobile: defaultAddress.mobile || 'Mobile not provided',
+                email: user?.email || 'Email not provided',
+                tag: defaultAddress.tag || 'HOME'
+              };
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error getting delivery address:', error);
+      // Final fallback to stored user data
+      userAddress = {
+        name: user?.name || 'Customer',
+        address: user?.address || user?.city || 'Address not provided',
+        mobile: user?.mobile || 'Mobile not provided',
+        email: user?.email || 'Email not provided'
+      };
+    }
     
     // Get all products from the current state (assuming products are available globally)
     let allProducts = [];
@@ -374,6 +865,7 @@ const PaymentPage = ({ goToAddress }) => {
     const orderedItems = trolleyIds.map(id => {
       const product = allProducts.find(p => p.id === id);
       if (product) {
+        const details = trolleyDetails[id] || {};
         return {
           id: product.id,
           title: product.title,
@@ -382,7 +874,8 @@ const PaymentPage = ({ goToAddress }) => {
           image: Array.isArray(product.images) ? product.images[0] : (product.images || product.image),
           category: product.category,
           description: product.description,
-          quantity: 1 // Default quantity
+          quantity: details.quantity || 1,
+          size: details.size || null
         };
       }
       return null;
@@ -409,6 +902,7 @@ const PaymentPage = ({ goToAddress }) => {
     // Prepare order data for backend
     const orderData = {
       userId: user._id || user.id,
+      deliveryAddress: userAddress, // Include the backend user address data
       products: orderedItems.map(item => ({
         product: {
           id: item.id,
@@ -420,6 +914,7 @@ const PaymentPage = ({ goToAddress }) => {
           description: item.description
         },
         quantity: item.quantity,
+        size: item.size,
         price: item.priceInINR
       })),
       total: totalAmount,
@@ -443,8 +938,10 @@ const PaymentPage = ({ goToAddress }) => {
         const savedOrder = await response.json();
         console.log('Order saved successfully:', savedOrder);
         
-        // Clear trolley from localStorage
+        // Clear trolley and related data from localStorage
         localStorage.removeItem('trolley');
+        localStorage.removeItem('trolleyDetails');
+        localStorage.removeItem('selectedDeliveryAddress');
         
         setIsProcessing(false);
         setShowSuccessPopup(true);
