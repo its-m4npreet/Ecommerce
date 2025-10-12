@@ -1,6 +1,6 @@
 import React from "react";
 import { Form } from "react-router-dom";
-import "./AddressForm.css";
+import "./addressForm.css";
 // import badgeColors from "@material-tailwind/react/theme/components/badge/badgeColors";
 
 const AddressForm = ({ form, onChange, onSubmit, onCancel }) => (
