@@ -619,7 +619,7 @@ const PersonalInfo = ({ user, onUserUpdate }) => {
               : userData.address || "Address not provided"}
           </div>
           {userData.addresses && userData.addresses.length > 1 && (
-            <div className="text-xs text-blue-400 mt-1 group-hover:text-blue-300 transition-colors animate-pulse">
+            <div className="text-xs text-blue-400 mt-1 group-hover:text-blue-300 ">
               +{userData.addresses.length - 1} more address{userData.addresses.length > 2 ? 'es' : ''}
             </div>
           )}

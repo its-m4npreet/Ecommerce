@@ -502,8 +502,8 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
     zipCode: '',
     tag: 'HOME'
   });
-  const [loading, setLoading] = React.useState(true);
   const [editingId, setEditingId] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
 
   // Fetch user addresses from backend on component mount
   React.useEffect(() => {
@@ -642,7 +642,6 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
   
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     
     try {
       const user = JSON.parse(localStorage.getItem('user'));
@@ -770,7 +769,7 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
       console.error('Error saving address:', error);
       alert('Error saving address. Please check your connection and try again.');
     } finally {
-      setLoading(false);
+      // No loading state needed
     }
   };
 
@@ -783,12 +782,9 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
         <div className="text-xs text-gray-500 font-semibold mb-2">SELECT DELIVERY ADDRESS</div>
         {/* Address Cards */}
         {loading ? (
-          <div className="border rounded-lg p-3 sm:p-4 flex flex-col gap-2 bg-[transparent] relative mb-2">
-            <div className="animate-pulse">
-              <div className="h-4 bg-gray-600 rounded mb-2"></div>
-              <div className="h-3 bg-gray-600 rounded mb-2"></div>
-              <div className="h-3 bg-gray-600 rounded w-3/4"></div>
-            </div>
+          <div className="flex items-center justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+            <span className="ml-3 text-gray-300">Loading addresses...</span>
           </div>
         ) : (
           addresses.map((address) => (
@@ -1270,11 +1266,9 @@ const PaymentPage = ({ goToAddress }) => {
         {/* Payment Details Section - Backend Data Display */}
         <div className="mb-4 sm:mb-6">
           {loading ? (
-            <div className="bg-[#2a2a2a] rounded-lg p-3">
-              <div className="animate-pulse space-y-2">
-                <div className="h-4 bg-gray-600 rounded w-1/3"></div>
-                <div className="h-8 bg-gray-600 rounded"></div>
-              </div>
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+              <span className="ml-3 text-gray-300">Loading payment methods...</span>
             </div>
           ) : (
             <>
