@@ -9,7 +9,7 @@ return (
             <div className="sm:col-span-2 lg:col-span-2 flex flex-col gap-3 md:gap-4">
                 <div className="flex items-center gap-2 mb-2">
                     <FaOpencart className="text-xl md:text-2xl text-blue-500" />
-                    <span className="text-xl md:text-2xl font-bold tracking-tight text-white">E-Shop</span>
+                    <span className="text-xl md:text-2xl font-bold tracking-tight text-white">E-shoply</span>
                 </div>
                 <p className="text-gray-400 text-sm">
                     Your one-stop shop for the latest products and best deals. Shop with confidence and enjoy fast delivery!
@@ -83,7 +83,7 @@ return (
             </div>
         </div>
         <div className="border-t border-gray-700 mt-6 md:mt-10 pt-4 text-center text-gray-400 text-xs md:text-sm">
-            © {new Date().getFullYear()} E-Shop. All rights reserved.
+            © {new Date().getFullYear()} E-shoply. All rights reserved.
         </div>
     </footer>
 );

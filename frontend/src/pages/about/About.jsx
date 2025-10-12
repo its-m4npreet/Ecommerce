@@ -7,14 +7,14 @@ export const About = () => (
     {/* Hero Banner */}
     <div className="w-full h-20 md:h-32 relative flex items-center justify-center rounded-b-3xl overflow-hidden">
       <h2 className="relative z-10 text-4xl md:text-5xl font-extrabold text-white text-center px-6 py-2 rounded-xl tracking-tight drop-shadow-xl">
-        About <span className="text-blue-400">E-Shop</span>
+        About <span className="text-blue-400">E-shoply</span>
       </h2>
     </div>
 
     {/* Description */}
     <div className="max-w-2xl w-full text-center mb-10 mt-10">
       <p className="text-lg text-gray-200 mb-6 font-normal">
-        Welcome to <span className="font-bold text-blue-400">E-Shop</span>! We bring you the latest electronics, fashion, furniture, and more—all at unbeatable prices. Our mission is to make online shopping easy, affordable, and enjoyable for everyone in India.
+        Welcome to <span className="font-bold text-blue-400">E-shoply</span>! We bring you the latest electronics, fashion, furniture, and more—all at unbeatable prices. Our mission is to make online shopping easy, affordable, and enjoyable for everyone in India.
       </p>
     </div>
 
@@ -49,7 +49,7 @@ export const About = () => (
     <div className="max-w-3xl w-full mx-auto mb-14  rounded-2xl  p-8 text-center">
       <h2 className="text-xl font-bold text-blue-400 mb-4">Our Story & Mission</h2>
       <p className="text-gray-200 mb-4">
-        Founded in 2025, <span className="font-bold text-blue-400">E-Shop</span> was created to revolutionize the way India shops online. We believe in quality, transparency, and putting our customers first. Our mission is to empower every Indian to shop smarter, safer, and happier.
+        Founded in 2025, <span className="font-bold text-blue-400">E-shoply</span> was created to revolutionize the way India shops online. We believe in quality, transparency, and putting our customers first. Our mission is to empower every Indian to shop smarter, safer, and happier.
       </p>
       <p className="text-gray-400 mb-2">
         <span className="font-semibold text-white">What makes us unique?</span> We offer the best prices, a huge selection, and a seamless shopping experience—backed by a passionate team that cares.
@@ -70,7 +70,7 @@ export const About = () => (
         {/* Card 2 */}
         <div className="bg-[#23232a] rounded-2xl shadow-md p-6 flex flex-col items-center w-60 hover:scale-105 transition-transform">
           <FaStore className="text-4xl text-blue-400 mb-2" />
-          <div className="text-white font-semibold text-base mb-1">E-Shop Team</div>
+          <div className="text-white font-semibold text-base mb-1">E-shoply Team</div>
           <div className="text-gray-400 text-xs mb-2">Customer Success</div>
           <p className="text-gray-400 text-xs">Dedicated team ensuring your shopping journey is smooth and delightful.</p>
         </div>
