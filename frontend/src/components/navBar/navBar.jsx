@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { FaUser, FaSignInAlt, FaSearch ,FaHome ,FaHeart, FaShoppingCart, FaOpencart, FaBars, FaTimes} from "react-icons/fa";
+import { FaUser, FaSignInAlt, FaHome ,FaHeart, FaShoppingCart, FaOpencart, FaBars, FaTimes} from "react-icons/fa";
 import { FaCircleInfo } from "react-icons/fa6";
 import { GiShoppingBag } from "react-icons/gi";
 import { IoHelpCircle } from "react-icons/io5";
 import "./navBar.css";
 // import logo from "/logo.png"
 import { NavLink , useLocation } from "react-router-dom";
+import { SearchComponent } from '../search/SearchComponent';
 export const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -96,7 +97,7 @@ export const Navbar = () => {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex h-14 w-full justify-evenly items-center gap-5 px-4">
                 <Logo />
-                <Search />
+                <SearchComponent />
                 {isLoginPage ? (
                     <div className="authLinks w-2xs flex gap-4 items-center justify-between">
                         <NavLink to="/auth/register" className="createUser flex items-center gap-2 px-4 py-2 rounded border hover:border-gray-600" style={{ whiteSpace: 'nowrap' }}>
@@ -121,7 +122,7 @@ export const Navbar = () => {
                 
                 {/* Mobile Search - Smaller */}
                 <div className="flex-1 mx-4">
-                    <MobileSearch />
+                    <SearchComponent isMobile={true} />
                 </div>
                 
                 {/* Mobile Menu Button - Animated Hamburger */}
@@ -405,35 +406,7 @@ const MobileAuth = ({ onLinkClick }) => {
     );
 }
 
-const Search = () => {
-    return (
-        <div className="searchBar w-120 h-10 flex items-center rounded shadow border border-gray-600">
-            <FaSearch className="ml-2 text-white" />
-            <input
-                type="search"
-                name="search"
-                id="search"
-                className="w-full h-full border-none outline-none px-3 bg-transparent text-white placeholder-gray-400"
-                placeholder="Search..."
-            />
-        </div>
-    );
-}
 
-const MobileSearch = () => {
-    return (
-        <div className="searchBar h-8 flex items-center rounded shadow border border-gray-600">
-            <FaSearch className="ml-2 text-white text-sm" />
-            <input
-                type="search"
-                name="search"
-                id="mobile-search"
-                className="w-full h-full border-none outline-none px-2 bg-transparent text-white placeholder-gray-400 text-sm"
-                placeholder="Search..."
-            />
-        </div>
-    );
-}
 
 const Logo = () => {
     return (

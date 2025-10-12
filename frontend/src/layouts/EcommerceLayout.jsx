@@ -4,6 +4,7 @@ import  {Navbar}  from "../components/navBar/navBar.jsx";
 import { useNavigation } from "react-router-dom";
 import LoadingPage from "../common/LoadingPage.jsx";
 import { Footer } from "../components/footer/footer.jsx";
+import { SearchProvider } from "../contexts/SearchContext.jsx";
 
 export const EcommerceLayout=()=>{
     const navigation = useNavigation();
@@ -14,11 +15,11 @@ export const EcommerceLayout=()=>{
               }
             // console.log("Navigation state:", navigation.state);
            return (
-        <>
+        <SearchProvider>
             <Navbar />
             <Outlet />
             <Footer />
-        </>
+        </SearchProvider>
     );
 
               }
