@@ -51,7 +51,7 @@ export const Product = () => {
 	useEffect(() => {
 		async function fetchRelated() {
 			try {
-				const res = await fetch("http://localhost:8080/api/products");
+				const res = await fetch("https://ecommerce-agqj.onrender.com/api/products");
 				if (!res.ok) throw new Error("Failed to fetch products");
 				const all = await res.json();
 				// Filter by same category, exclude current product

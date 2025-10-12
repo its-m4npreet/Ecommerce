@@ -2,7 +2,7 @@
 
 export const getProducts = async () => {
   try {
-    const response = await fetch("http://localhost:8080/api/products");
+    const response = await fetch("https://ecommerce-agqj.onrender.com/api/products");
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }

@@ -34,7 +34,7 @@ const Trolley = () => {
   const [trolley, setTrolley] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/products')
+    fetch('https://ecommerce-agqj.onrender.com/api/products')
       .then(res => res.json())
       .then(data => {
         setProducts(data);
@@ -157,7 +157,7 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
           // Also try to fetch fresh data from backend
           const userId = storedUser._id || storedUser.id;
           if (userId) {
-            const response = await fetch(`http://localhost:8080/api/users/${userId}`);
+            const response = await fetch(`https://ecommerce-agqj.onrender.com/api/users/${userId}`);
             if (response.ok) {
               const freshUser = await response.json();
               setUserData({
@@ -495,7 +495,7 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
         if (user && (user._id || user.id)) {
           // Try to fetch multiple addresses first (new API)
           try {
-            const addressesResponse = await fetch(`http://localhost:8080/api/users/${user._id || user.id}/addresses`);
+            const addressesResponse = await fetch(`https://ecommerce-agqj.onrender.com/api/users/${user._id || user.id}/addresses`);
             if (addressesResponse.ok) {
               const userAddresses = await addressesResponse.json();
               if (userAddresses && userAddresses.length > 0) {
@@ -513,7 +513,7 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
 
           // Fallback to single address API (existing system)
           try {
-            const userResponse = await fetch(`http://localhost:8080/api/users/${user._id || user.id}`);
+            const userResponse = await fetch(`https://ecommerce-agqj.onrender.com/api/users/${user._id || user.id}`);
             if (userResponse.ok) {
               const userData = await userResponse.json();
               const singleAddress = {
@@ -595,7 +595,7 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
     if (window.confirm('Are you sure you want to delete this address?')) {
       try {
         const user = JSON.parse(localStorage.getItem('user'));
-        const response = await fetch(`http://localhost:8080/api/users/${user._id || user.id}/addresses/${addressId}`, {
+        const response = await fetch(`https://ecommerce-agqj.onrender.com/api/users/${user._id || user.id}/addresses/${addressId}`, {
           method: 'DELETE'
         });
 
@@ -651,7 +651,7 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
           try {
             if (editingId && editingId !== 'new') {
               // Update existing address
-              response = await fetch(`http://localhost:8080/api/users/${user._id || user.id}/addresses/${editingId}`, {
+              response = await fetch(`https://ecommerce-agqj.onrender.com/api/users/${user._id || user.id}/addresses/${editingId}`, {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json'
@@ -660,7 +660,7 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
               });
             } else {
               // Create new address
-              response = await fetch(`http://localhost:8080/api/users/${user._id || user.id}/addresses`, {
+              response = await fetch(`https://ecommerce-agqj.onrender.com/api/users/${user._id || user.id}/addresses`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
@@ -676,7 +676,7 @@ const AddressChecking = ({ goToPayment, goToTrolley }) => {
         if (!isUsingMultipleAddresses || !response || !response.ok) {
           // Fallback to single address API (update user profile)
           console.log('Falling back to single address API');
-          response = await fetch(`http://localhost:8080/api/users/${user._id || user.id}`, {
+          response = await fetch(`https://ecommerce-agqj.onrender.com/api/users/${user._id || user.id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json'
@@ -923,7 +923,7 @@ const PaymentPage = ({ goToAddress }) => {
       try {
         const user = JSON.parse(localStorage.getItem('user'));
         if (user && (user._id || user.id)) {
-          const response = await fetch(`http://localhost:8080/api/users/${user._id || user.id}/payment-methods`);
+          const response = await fetch(`https://ecommerce-agqj.onrender.com/api/users/${user._id || user.id}/payment-methods`);
           if (response.ok) {
             const data = await response.json();
             setPaymentDetails(data);
@@ -996,7 +996,7 @@ const PaymentPage = ({ goToAddress }) => {
       } else {
         // Fallback to fetching user's default address
         if (user && (user._id || user.id)) {
-          const userResponse = await fetch(`http://localhost:8080/api/users/${user._id || user.id}/addresses`);
+          const userResponse = await fetch(`https://ecommerce-agqj.onrender.com/api/users/${user._id || user.id}/addresses`);
           if (userResponse.ok) {
             const addresses = await userResponse.json();
             const defaultAddress = addresses.find(addr => addr.isDefault) || addresses[0];
@@ -1094,7 +1094,7 @@ const PaymentPage = ({ goToAddress }) => {
       console.log('Sending order to backend:', orderData);
       
       // Send order to backend
-      const response = await fetch('http://localhost:8080/api/orders', {
+      const response = await fetch('https://ecommerce-agqj.onrender.com/api/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

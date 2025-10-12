@@ -47,7 +47,7 @@ export const Account = () => {
       const userId = storedUser._id || storedUser.id;
 
       const response = await fetch(
-        `http://localhost:8080/api/users/${userId}`,
+        `https://ecommerce-agqj.onrender.com/api/users/${userId}`,
         {
           method: "PUT",
           headers: {
@@ -130,7 +130,7 @@ export const Account = () => {
 
         const userId = storedUser._id || storedUser.id;
         const response = await fetch(
-          `http://localhost:8080/api/users/${userId}`
+          `https://ecommerce-agqj.onrender.com/api/users/${userId}`
         );
 
         if (!response.ok) {
@@ -476,7 +476,7 @@ const PersonalInfo = ({ user, onUserUpdate }) => {
       const userId = storedUser._id || storedUser.id;
 
       const response = await fetch(
-        `http://localhost:8080/api/users/${userId}`,
+        `https://ecommerce-agqj.onrender.com/api/users/${userId}`,
         {
           method: "PUT",
           headers: {
@@ -752,7 +752,7 @@ const PaymentMethods = ({ user }) => {
       const userId = storedUser._id || storedUser.id;
 
       const response = await fetch(
-        `http://localhost:8080/api/users/${userId}`,
+        `https://ecommerce-agqj.onrender.com/api/users/${userId}`,
         {
           method: "PUT",
           headers: {
@@ -933,7 +933,7 @@ const OrdersHistory = () => {
     const userId = user._id || user.id;
     console.log("Fetching orders for userId:", userId);
 
-    fetch(`http://localhost:8080/api/orders/user/${userId}`)
+    fetch(`https://ecommerce-agqj.onrender.com/api/orders/user/${userId}`)
       .then((res) => {
         console.log("Orders API response status:", res.status);
         if (!res.ok) throw new Error("Failed to fetch orders");
@@ -965,7 +965,7 @@ const OrdersHistory = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/orders/${orderId}/cancel`,
+        `https://ecommerce-agqj.onrender.com/api/orders/${orderId}/cancel`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -1120,7 +1120,7 @@ const OrdersHistory = () => {
                         item.product?.images?.[0] || 
                         item.image ||
                         (item.product?.image && !item.product.image.startsWith('http') 
-                          ? `http://localhost:8080${item.product.image.startsWith('/') ? item.product.image : '/' + item.product.image}` 
+                          ? `https://ecommerce-agqj.onrender.com${item.product.image.startsWith('/') ? item.product.image : '/' + item.product.image}` 
                           : item.product?.image
                         ) ||
                         "https://via.placeholder.com/60?text=No+Image"
@@ -1215,7 +1215,7 @@ const EditModal = ({ type, currentData, onSave, onClose }) => {
       const userId = storedUser._id || storedUser.id;
 
       const response = await fetch(
-        `http://localhost:8080/api/users/${userId}/password`,
+        `https://ecommerce-agqj.onrender.com/api/users/${userId}/password`,
         {
           method: "PATCH",
           headers: {

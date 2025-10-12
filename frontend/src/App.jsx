@@ -1,21 +1,20 @@
                
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import {EcommerceLayout} from './layouts/EcommerceLayout';
-import './App.css'
-import { Home } from './pages/home/home';
 import { getProducts } from './api/product';
-import  {ErrorSection}  from './common/ErrorPage';
-import { Shop } from './features/shop/Shop';
-import { Product } from './features/product/Product';
-import { About } from './pages/about/About';
-import { Account } from './features/account/Account';
-import Wishlist from './features/wishlist/Wishlist';
-import Trolley from './features/trolley/Trolley';
 import { productsDetails } from './api/productsDetails';
-import Help from './pages/help/Help';
+import './App.css';
+import { ErrorSection } from './common/errorPage';
+import { Account } from './features/account/Account';
+import { Product } from './features/product/Product';
+import Trolley from './features/trolley/Trolley';
+import Wishlist from './features/wishlist/Wishlist';
 import AddressForm from './forms/AddressForm';
+import { EcommerceLayout } from './layouts/EcommerceLayout';
+import { About } from './pages/about/About';
 import Login from './pages/auth/login/login';
 import Register from './pages/auth/register/register';
+import Help from './pages/help/Help';
+import { Home } from './pages/home/home';
 
 
 function App() {

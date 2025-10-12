@@ -10,7 +10,7 @@ const Wishlist = () => {
 
 	useEffect(() => {
 		// Fetch all products from backend
-		fetch('http://localhost:8080/api/products')
+		fetch('https://ecommerce-agqj.onrender.com/api/products')
 			.then(res => res.json())
 			.then(data => setProducts(data));
 	}, []);
