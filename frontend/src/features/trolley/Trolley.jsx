@@ -279,7 +279,17 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
                     <div className="space-y-1 text-xs">
                       <div className="text-gray-400">
                         Delivery{" "}
-                        <span className="font-semibold text-gray-200">Tue, 3 Sep</span>
+                        <span className="font-semibold text-gray-200">
+                          {(() => {
+                            const deliveryDate = new Date();
+                            deliveryDate.setDate(deliveryDate.getDate() + 7);
+                            return deliveryDate.toLocaleDateString('en-US', { 
+                              weekday: 'short', 
+                              day: 'numeric', 
+                              month: 'short' 
+                            });
+                          })()}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -343,7 +353,15 @@ const TrolleyPage = ({ trolley, handleRemoveItem, goToAddress }) => {
                   <div className="text-gray-400 text-xs">
                     Delivery{" "}
                     <span className="font-semibold text-gray-200">
-                      Tue, 3 Sep
+                      {(() => {
+                        const deliveryDate = new Date();
+                        deliveryDate.setDate(deliveryDate.getDate() + 7);
+                        return deliveryDate.toLocaleDateString('en-US', { 
+                          weekday: 'short', 
+                          day: 'numeric', 
+                          month: 'short' 
+                        });
+                      })()}
                     </span>
                   </div>
                 </div>
@@ -917,41 +935,114 @@ const PaymentPage = ({ goToAddress }) => {
   });
   const [loading, setLoading] = React.useState(true);
 
-  // Fetch payment details from backend
+  // Fetch payment details from user profile
   React.useEffect(() => {
     const fetchPaymentDetails = async () => {
       try {
         const user = JSON.parse(localStorage.getItem('user'));
         if (user && (user._id || user.id)) {
-          const response = await fetch(`https://ecommerce-agqj.onrender.com/api/users/${user._id || user.id}/payment-methods`);
+          // Fetch user profile data to get stored UPI and card details
+          const response = await fetch(`https://ecommerce-agqj.onrender.com/api/users/${user._id || user.id}`);
           if (response.ok) {
-            const data = await response.json();
-            setPaymentDetails(data);
-          } else {
-            // Fallback data if API doesn't exist
+            const userData = await response.json();
+            
+            // Parse UPI details from user data
+            const upiDetails = [];
+            if (userData.upiId) {
+              upiDetails.push({
+                id: 'user-upi',
+                upiId: userData.upiId,
+                provider: userData.upiProvider || 'UPI',
+                isDefault: true
+              });
+            }
+
+            // Parse credit card details from user data
+            const savedCards = [];
+            if (userData.creditCard && userData.cardHolderName) {
+              savedCards.push({
+                id: 'user-card',
+                lastFour: userData.creditCard.slice(-4),
+                type: userData.cardType || 'Card',
+                cardHolderName: userData.cardHolderName,
+                expiry: userData.expiryDate,
+                isDefault: true
+              });
+            }
+
             setPaymentDetails({
-              upiDetails: [
-                { id: 'upi1', upiId: 'user@paytm', provider: 'Paytm', isDefault: true },
-                { id: 'upi2', upiId: 'user@gpay', provider: 'Google Pay', isDefault: false }
-              ],
-              savedCards: [
-                { id: 'card1', lastFour: '1234', type: 'Visa', isDefault: true },
-                { id: 'card2', lastFour: '5678', type: 'Mastercard', isDefault: false }
-              ],
+              upiDetails: upiDetails,
+              savedCards: savedCards,
+              codAvailable: true
+            });
+          } else {
+            // Check localStorage for any stored payment data
+            const upiDetails = [];
+            if (user.upiId) {
+              upiDetails.push({
+                id: 'user-upi',
+                upiId: user.upiId,
+                provider: user.upiProvider || 'UPI',
+                isDefault: true
+              });
+            }
+
+            const savedCards = [];
+            if (user.creditCard && user.cardHolderName) {
+              savedCards.push({
+                id: 'user-card',
+                lastFour: user.creditCard.slice(-4),
+                type: user.cardType || 'Card',
+                cardHolderName: user.cardHolderName,
+                expiry: user.expiryDate,
+                isDefault: true
+              });
+            }
+
+            setPaymentDetails({
+              upiDetails: upiDetails,
+              savedCards: savedCards,
               codAvailable: true
             });
           }
+        } else {
+          // No user data - show empty arrays
+          setPaymentDetails({
+            upiDetails: [],
+            savedCards: [],
+            codAvailable: true
+          });
         }
       } catch (error) {
-        console.error('Error fetching payment details:', error);
-        // Set fallback data
+        console.error('Error fetching user payment details:', error);
+        // Try to use localStorage user data as fallback
+        const user = JSON.parse(localStorage.getItem('user')) || {};
+        
+        const upiDetails = [];
+        if (user.upiId) {
+          upiDetails.push({
+            id: 'user-upi',
+            upiId: user.upiId,
+            provider: user.upiProvider || 'UPI',
+            isDefault: true
+          });
+        }
+
+        const savedCards = [];
+        if (user.creditCard && user.cardHolderName) {
+          savedCards.push({
+            id: 'user-card',
+            lastFour: user.creditCard.slice(-4),
+            type: user.cardType || 'Card',
+            cardHolderName: user.cardHolderName,
+            expiry: user.expiryDate,
+            isDefault: true
+          });
+        }
+
         setPaymentDetails({
-          upiDetails: [
-            { id: 'upi1', upiId: 'user@paytm', provider: 'Paytm', isDefault: true }
-          ],
-          savedCards: [
-            { id: 'card1', lastFour: '1234', type: 'Visa', isDefault: true }
-          ],
+          upiDetails: upiDetails,
+          savedCards: savedCards,
           codAvailable: true
         });
       } finally {
@@ -1190,7 +1281,7 @@ const PaymentPage = ({ goToAddress }) => {
               {/* UPI/Netbanking Details */}
               {selectedPayment === 'upi' && (
                 <div className="bg-[#2a2a2a] rounded-lg p-3">
-                  <h3 className="text-gray-200 font-medium mb-2 text-sm">UPI Details</h3>
+                  <h3 className="text-gray-200 font-medium mb-2 text-sm">Your UPI Details</h3>
                   {paymentDetails.upiDetails && paymentDetails.upiDetails.length > 0 ? (
                     <div className="space-y-2">
                       {paymentDetails.upiDetails.map((upi) => (
@@ -1207,8 +1298,9 @@ const PaymentPage = ({ goToAddress }) => {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-gray-400 text-sm p-2 bg-[#18181b] rounded">
-                      <p>No UPI details found</p>
+                    <div className="text-gray-400 text-sm p-2 bg-[#18181b] rounded text-center">
+                      <p>No UPI accounts linked to your profile</p>
+                      <p className="text-xs mt-1">Add UPI details from your account settings</p>
                     </div>
                   )}
                 </div>
@@ -1217,7 +1309,7 @@ const PaymentPage = ({ goToAddress }) => {
               {/* Credit/Debit Card Details */}
               {selectedPayment === 'credit' && (
                 <div className="bg-[#2a2a2a] rounded-lg p-3">
-                  <h3 className="text-gray-200 font-medium mb-2 text-sm">Saved Cards</h3>
+                  <h3 className="text-gray-200 font-medium mb-2 text-sm">Your Saved Cards</h3>
                   {paymentDetails.savedCards && paymentDetails.savedCards.length > 0 ? (
                     <div className="space-y-2">
                       {paymentDetails.savedCards.map((card) => (
@@ -1227,6 +1319,7 @@ const PaymentPage = ({ goToAddress }) => {
                           </div>
                           <div className="flex-1">
                             <div className="text-gray-200 text-sm font-medium">{card.type} •••• {card.lastFour}</div>
+                            <div className="text-gray-400 text-xs">{card.cardHolderName}</div>
                             <div className="text-gray-400 text-xs">Expires {card.expiry || 'XX/XX'}</div>
                           </div>
                           {card.isDefault && <span className="text-xs px-2 py-0.5 bg-blue-600 text-white rounded">Primary</span>}
@@ -1234,8 +1327,9 @@ const PaymentPage = ({ goToAddress }) => {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-gray-400 text-sm p-2 bg-[#18181b] rounded">
-                      <p>No saved cards found</p>
+                    <div className="text-gray-400 text-sm p-2 bg-[#18181b] rounded text-center">
+                      <p>No credit/debit cards saved to your profile</p>
+                      <p className="text-xs mt-1">Add payment methods from your account settings</p>
                     </div>
                   )}
                 </div>
