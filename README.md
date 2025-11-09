@@ -52,20 +52,11 @@ A full-featured Ecommerce website built with React and Node.js, designed for sca
     npm start
     ```
 
-## 🖼️ Screenshots
 
-| Account Page | Product Page | Home Page |
-|--------------|--------------|-----------|
-| ![Account](screenshots/account.png) | ![Product](screenshots/product.png) | ![Home](screenshots/home.png) |
 
 ## 🤝 Contributing
 
 Contributions are welcome! Please open an issue to discuss your ideas or submit a pull request.
 
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
 
 **Explore, shop, and manage with ease. Your next ecommerce solution starts here!**
