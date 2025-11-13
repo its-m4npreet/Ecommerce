@@ -14,7 +14,7 @@ A full-featured Ecommerce website built with React and Node.js, designed for sca
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** React, Redux, Axios, Bootstrap
+- **Frontend:** React, Redux, Axios, Tailwind
 - **Backend:** Node.js, Express, MongoDB
 - **Authentication:** JWT
 - **Payment Integration:** Stripe
